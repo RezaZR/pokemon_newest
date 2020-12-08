@@ -9,6 +9,12 @@ import ListComponent from "../components/List";
 
 import ErrorPage from "./Error";
 
+import styled from "@emotion/styled";
+
+import ContainerComponent from "../components/Container";
+import SkeletonComponent from "../components/Skeleton";
+import ScreenComponent from "../components/Screen";
+
 function Home() {
   const [limit, setLimit] = React.useState(10);
   const [offset, setOffset] = React.useState(1);
@@ -18,16 +24,19 @@ function Home() {
     GET_POKEMONS_LIST,
     {
       variables: { limit, offset },
-      // fetchPolicy: "no-cache",
-      // nextFetchPolicy: "no-cache",
     }
   );
 
-  if (loading) return "Loading...";
+  // if (loading) return "Loading...";
   if (error) return <ErrorPage />;
 
   function handleClickedPokemon(e, pokemon) {
     e.preventDefault();
+
+    console.log(e.target.classList);
+    if (!e.target.classList.contains("active")) {
+      e.target.classList.add("active");
+    }
     setActivePokemon(pokemon);
   }
 
@@ -57,41 +66,49 @@ function Home() {
   return (
     <>
       {pokemons && (
-        <section>
-          {Object.keys(activePokemon).length === 0 ? (
-            <p>Welcome!</p>
-          ) : (
-            <img
-              src={activePokemon.image}
-              alt={uppercaseFirstLetter(activePokemon.name)}
-              title={`${uppercaseFirstLetter(activePokemon.name)}'s image`}
-            />
-          )}
-          <ul>
-            {pokemons.results &&
-              pokemons.results
-                .slice(0, 10)
-                .map((pokemon) => (
-                  <ListComponent
-                    key={pokemon.name}
-                    pokemon={pokemon}
-                    handleClickedPokemon={handleClickedPokemon}
+        <ContainerComponent>
+          <SkeletonComponent>
+            <ScreenComponent>
+              <div className="layer hide-scrollbar">
+                {Object.keys(activePokemon).length === 0 ? (
+                  <div className="empty"></div>
+                ) : (
+                  <img
+                    src={activePokemon.image}
+                    alt={uppercaseFirstLetter(activePokemon.name)}
+                    title={`${uppercaseFirstLetter(
+                      activePokemon.name
+                    )}'s image`}
                   />
-                ))}
-          </ul>
-          <button
-            onClick={(e) => handleClickedPagination(e, "prev")}
-            disabled={!pokemons.previous}
-          >
-            Prev
-          </button>
-          <button
-            onClick={(e) => handleClickedPagination(e, "next")}
-            disabled={!pokemons.next}
-          >
-            Next
-          </button>
-        </section>
+                )}
+                <ul>
+                  {pokemons.results &&
+                    pokemons.results
+                      .slice(0, 10)
+                      .map((pokemon) => (
+                        <ListComponent
+                          key={pokemon.name}
+                          pokemon={pokemon}
+                          handleClickedPokemon={handleClickedPokemon}
+                        />
+                      ))}
+                </ul>
+              </div>
+            </ScreenComponent>
+            <button
+              onClick={(e) => handleClickedPagination(e, "prev")}
+              disabled={!pokemons.previous}
+            >
+              Prev
+            </button>
+            <button
+              onClick={(e) => handleClickedPagination(e, "next")}
+              disabled={!pokemons.next}
+            >
+              Next
+            </button>
+          </SkeletonComponent>
+        </ContainerComponent>
       )}
     </>
   );

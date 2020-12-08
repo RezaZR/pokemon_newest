@@ -19,7 +19,6 @@ function App({ children }) {
 
   return (
     <ApolloProvider client={client}>
-      <main>{children}</main>
       <Router>
         <Switch>
           <Route path="/" exact component={HomePage} />

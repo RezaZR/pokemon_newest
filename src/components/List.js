@@ -1,8 +1,10 @@
-function List({ pokemon }) {
+import { uppercaseFirstLetter } from "../helpers";
+
+function List({ pokemon, handleClickedPokemon }) {
   return (
-    <section>
-      <div>{pokemon.name}</div>
-    </section>
+    <li onClick={(e) => handleClickedPokemon(e, pokemon)}>
+      {uppercaseFirstLetter(pokemon.name)}
+    </li>
   );
 }
 

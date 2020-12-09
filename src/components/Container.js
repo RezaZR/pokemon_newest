@@ -5,6 +5,7 @@ const ContainerStyle = styled.main`
   width: 100%;
   height: 100vh;
   margin: 0 auto;
+  padding: 1rem;
   @media (min-width: 520px) {
     max-width: 480px;
   }

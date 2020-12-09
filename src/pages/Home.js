@@ -3,7 +3,7 @@ import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 
 import { GET_POKEMONS_LIST } from "../graphql";
-import { uppercaseFirstLetter } from "../helpers";
+import { uppercaseFirstLetter, addOrRemoveClass } from "../helpers";
 
 import ListComponent from "../components/List";
 
@@ -32,12 +32,14 @@ function Home() {
 
   function handleClickedPokemon(e, pokemon) {
     e.preventDefault();
-
-    console.log(e.target.classList);
-    if (!e.target.classList.contains("active")) {
-      e.target.classList.add("active");
+    // remove class active from last selected pokemon
+    if (activePokemon.hasOwnProperty("lastTarget")) {
+      addOrRemoveClass(activePokemon.lastTarget, "remove", "active");
     }
-    setActivePokemon(pokemon);
+    // then add class active to newly selected pokemon
+    addOrRemoveClass(e.target, "add", "active");
+
+    setActivePokemon({ lastTarget: e.target, pokemon });
   }
 
   function handleClickedPagination(e, direction) {
@@ -74,10 +76,10 @@ function Home() {
                   <div className="empty"></div>
                 ) : (
                   <img
-                    src={activePokemon.image}
-                    alt={uppercaseFirstLetter(activePokemon.name)}
+                    src={activePokemon.pokemon.image}
+                    alt={uppercaseFirstLetter(activePokemon.pokemon.name)}
                     title={`${uppercaseFirstLetter(
-                      activePokemon.name
+                      activePokemon.pokemon.name
                     )}'s image`}
                   />
                 )}
@@ -107,6 +109,7 @@ function Home() {
             >
               Next
             </button>
+            <button>Select</button>
           </SkeletonComponent>
         </ContainerComponent>
       )}

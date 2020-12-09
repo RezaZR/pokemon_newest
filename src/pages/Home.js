@@ -9,13 +9,11 @@ import ListComponent from "../components/List";
 
 import ErrorPage from "./Error";
 
-import styled from "@emotion/styled";
-
 import ContainerComponent from "../components/Container";
 import SkeletonComponent from "../components/Skeleton";
 import ScreenComponent from "../components/Screen";
 
-function Home() {
+function Home({ history }) {
   const [limit, setLimit] = React.useState(10);
   const [offset, setOffset] = React.useState(1);
   const [activePokemon, setActivePokemon] = React.useState({});
@@ -30,7 +28,7 @@ function Home() {
   // if (loading) return "Loading...";
   if (error) return <ErrorPage />;
 
-  function handleClickedPokemon(e, pokemon) {
+  function handleClickPokemon(e, pokemon) {
     e.preventDefault();
     // remove class active from last selected pokemon
     if (activePokemon.hasOwnProperty("lastTarget")) {
@@ -42,7 +40,7 @@ function Home() {
     setActivePokemon({ lastTarget: e.target, pokemon });
   }
 
-  function handleClickedPagination(e, direction) {
+  function handleClickPagination(e, direction) {
     e.preventDefault();
     setActivePokemon({});
     if (direction === "prev" && offset > 0) {
@@ -63,6 +61,15 @@ function Home() {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  function handleClick(e) {
+    e.preventDefault();
+
+    console.log(history);
+    history.push({
+      pathname: `/pokemon_details/${activePokemon.pokemon.name}`, state: activePokemon.pokemon.image
+    });
   }
 
   return (
@@ -91,25 +98,25 @@ function Home() {
                         <ListComponent
                           key={pokemon.name}
                           pokemon={pokemon}
-                          handleClickedPokemon={handleClickedPokemon}
+                          handleClickPokemon={handleClickPokemon}
                         />
                       ))}
                 </ul>
               </div>
             </ScreenComponent>
             <button
-              onClick={(e) => handleClickedPagination(e, "prev")}
+              onClick={(e) => handleClickPagination(e, "prev")}
               disabled={!pokemons.previous}
             >
               Prev
             </button>
             <button
-              onClick={(e) => handleClickedPagination(e, "next")}
+              onClick={(e) => handleClickPagination(e, "next")}
               disabled={!pokemons.next}
             >
               Next
             </button>
-            <button>Select</button>
+            <button onClick={handleClick}>Select</button>
           </SkeletonComponent>
         </ContainerComponent>
       )}

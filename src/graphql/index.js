@@ -14,4 +14,28 @@ const GET_POKEMONS_LIST = gql`
   }
 `;
 
-export { GET_POKEMONS_LIST };
+const GET_POKEMON = gql`
+  query pokemon($name: String!) {
+    pokemon(name: $name) {
+      id
+      name
+      abilities {
+        ability {
+          name
+        }
+      }
+      moves {
+        move {
+          name
+        }
+      }
+      types {
+        type {
+          name
+        }
+      }
+    }
+  }
+`;
+
+export { GET_POKEMONS_LIST, GET_POKEMON };

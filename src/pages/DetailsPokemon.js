@@ -14,6 +14,8 @@ import ScreenComponent from "../components/Screen";
 import PokemonAsset from "../components/assets/Pokemon";
 
 function PokemonDetails({ match, location }) {
+  const [catchStatus, setCatchStatus] = React.useState(null);
+
   const { loading, error, data: { pokemon = {} } = {} } = useQuery(
     GET_POKEMON,
     {
@@ -21,9 +23,38 @@ function PokemonDetails({ match, location }) {
     }
   );
 
-  React.useEffect(() => {
-    console.log(location);
-  }, []);
+  React.useEffect(() => {}, []);
+
+  function catchPokemon(e) {
+    e.preventDefault();
+
+    const result = Math.random();
+    if (result >= 0.5) {
+      setCatchStatus("catched");
+      // access localStorage and parse the existing owned pokemons
+      const ownedPokemons = localStorage.getItem("ownedPokemons");
+      const ownedPokemonsParsed = JSON.parse(ownedPokemons);
+      // set the catched pokemon's info
+      const catchedPokemon = {
+        name: pokemon.name,
+        nickName: "yep",
+      };
+      console.log("p", ownedPokemons, ownedPokemonsParsed);
+      let ownedPokemonsUpdated = [];
+      if (ownedPokemonsParsed) {
+        ownedPokemonsUpdated = [...ownedPokemonsParsed];
+      }
+      ownedPokemonsUpdated.push(catchedPokemon);
+      console.log(ownedPokemonsUpdated);
+      console.log("x");
+      localStorage.setItem(
+        "ownedPokemons",
+        JSON.stringify(ownedPokemonsUpdated)
+      );
+    } else {
+      setCatchStatus("missed");
+    }
+  }
 
   return (
     <>
@@ -52,9 +83,10 @@ function PokemonDetails({ match, location }) {
                     ))}
                   </ul>
                 )}
-                <button>
+                <button onClick={catchPokemon}>
                   <PokemonAsset title="Catch" desc="Button to catch pokemon" />
                 </button>
+                {catchStatus}
               </div>
             </ScreenComponent>
           </SkeletonComponent>

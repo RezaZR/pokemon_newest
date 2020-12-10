@@ -11,6 +11,7 @@ import ErrorPage from "./Error";
 
 import ContainerComponent from "../components/Container";
 import SkeletonComponent from "../components/Skeleton";
+import CaseComponent from "../components/Case";
 import ScreenComponent from "../components/Screen";
 
 function Home({ history }) {
@@ -63,12 +64,12 @@ function Home({ history }) {
     }
   }
 
-  function handleClick(e) {
+  function goToSelectedPokemon(e) {
     e.preventDefault();
 
-    console.log(history);
     history.push({
-      pathname: `/pokemon_details/${activePokemon.pokemon.name}`, state: activePokemon.pokemon.image
+      pathname: `/pokemon_details/${activePokemon.pokemon.name}`,
+      state: activePokemon.pokemon.image,
     });
   }
 
@@ -77,20 +78,20 @@ function Home({ history }) {
       {pokemons && (
         <ContainerComponent>
           <SkeletonComponent>
-            <ScreenComponent>
-              <div className="layer hide-scrollbar">
-                {Object.keys(activePokemon).length === 0 ? (
-                  <div className="empty"></div>
-                ) : (
-                  <img
-                    src={activePokemon.pokemon.image}
-                    alt={uppercaseFirstLetter(activePokemon.pokemon.name)}
-                    title={`${uppercaseFirstLetter(
-                      activePokemon.pokemon.name
-                    )}'s image`}
-                  />
-                )}
-                <ul>
+            <CaseComponent>
+              <ScreenComponent className="normal-screen hide-scrollbar">
+                <aside className="image-container">
+                  {Object.keys(activePokemon).length !== 0 && (
+                    <img
+                      src={activePokemon.pokemon.image}
+                      alt={uppercaseFirstLetter(activePokemon.pokemon.name)}
+                      title={`${uppercaseFirstLetter(
+                        activePokemon.pokemon.name
+                      )}'s image`}
+                    />
+                  )}
+                </aside>
+                <ul className="content-container hide-scrollbar">
                   {pokemons.results &&
                     pokemons.results
                       .slice(0, 10)
@@ -102,8 +103,8 @@ function Home({ history }) {
                         />
                       ))}
                 </ul>
-              </div>
-            </ScreenComponent>
+              </ScreenComponent>
+            </CaseComponent>
             <button
               onClick={(e) => handleClickPagination(e, "prev")}
               disabled={!pokemons.previous}
@@ -116,7 +117,7 @@ function Home({ history }) {
             >
               Next
             </button>
-            <button onClick={handleClick}>Select</button>
+            <button onClick={goToSelectedPokemon}>Select</button>
           </SkeletonComponent>
         </ContainerComponent>
       )}

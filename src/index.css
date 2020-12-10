@@ -1,6 +1,7 @@
 :root {
   --color-bg-1: #33dcff;
-  --color-bg-2: #363534;
+  --color-bg-2: rgba(54, 53, 52, 1);
+  --color-bg-2-035: rgba(54, 53, 52, 0.35);
   --color-bg-3: #b5b2b0;
   --color-bg-3-1: #4c4947;
 
@@ -108,13 +109,4 @@ label {
 
 label {
   margin: 0;
-}
-
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;
 }

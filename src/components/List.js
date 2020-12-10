@@ -8,9 +8,12 @@ function List({ pokemon, handleClickPokemon }) {
   );
 
   return (
-    <li onClick={(e) => handleClickPokemon(e, pokemon)}>
-      <div className="list-name">{uppercaseFirstLetter(pokemon.name)}</div>
-      <div className="list-details">
+    <li
+      className="pokemon-list"
+      onClick={(e) => handleClickPokemon(e, pokemon)}
+    >
+      <div className="pokemon-list__name">{pokemon.name}</div>
+      <div className="pokemon-list__details">
         Owned:{" "}
         {ownedPokemons
           ? ownedPokemons.filter(

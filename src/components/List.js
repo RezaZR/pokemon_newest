@@ -4,7 +4,7 @@ import { uppercaseFirstLetter } from "../helpers";
 
 function List({ pokemon, handleClickPokemon }) {
   const [ownedPokemons, setOwnedPokemons] = React.useState(() =>
-    JSON.parse(localStorage.getItem("ownedPokemon"))
+    JSON.parse(localStorage.getItem("ownedPokemons"))
   );
 
   return (

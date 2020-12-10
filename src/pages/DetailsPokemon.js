@@ -11,6 +11,8 @@ import ContainerComponent from "../components/Container";
 import SkeletonComponent from "../components/Skeleton";
 import ScreenComponent from "../components/Screen";
 
+import PokemonAsset from "../components/assets/Pokemon";
+
 function PokemonDetails({ match, location }) {
   const { loading, error, data: { pokemon = {} } = {} } = useQuery(
     GET_POKEMON,
@@ -50,6 +52,9 @@ function PokemonDetails({ match, location }) {
                     ))}
                   </ul>
                 )}
+                <button>
+                  <PokemonAsset title="Catch" desc="Button to catch pokemon" />
+                </button>
               </div>
             </ScreenComponent>
           </SkeletonComponent>

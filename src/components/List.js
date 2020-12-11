@@ -1,7 +1,5 @@
 import React from "react";
 
-import { uppercaseFirstLetter } from "../helpers";
-
 function List({ pokemon, handleSelectedPokemon }) {
   const [ownedPokemons, setOwnedPokemons] = React.useState(() =>
     JSON.parse(localStorage.getItem("ownedPokemons"))

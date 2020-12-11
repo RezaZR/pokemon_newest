@@ -34,7 +34,12 @@ function PokemonDetails({ match, location }) {
       setCatchStatus("catched");
       // access localStorage and parse the existing owned pokemons
       const ownedPokemons = localStorage.getItem("ownedPokemons");
-      const ownedPokemonsParsed = JSON.parse(ownedPokemons);
+      let ownedPokemonsParsed;
+      try {
+        ownedPokemonsParsed = JSON.parse(ownedPokemons);
+      } catch (e) {
+        console.error(e);
+      }
       // set the catched pokemon's info
       const catchedPokemon = {
         name: pokemon.name,
@@ -46,10 +51,14 @@ function PokemonDetails({ match, location }) {
         ownedPokemonsUpdated = [...ownedPokemonsParsed];
       }
       ownedPokemonsUpdated.push(catchedPokemon);
-      localStorage.setItem(
-        "ownedPokemons",
-        JSON.stringify(ownedPokemonsUpdated)
-      );
+      try {
+        localStorage.setItem(
+          "ownedPokemons",
+          JSON.stringify(ownedPokemonsUpdated)
+        );
+      } catch (e) {
+        console.error(e);
+      }
     } else {
       setCatchStatus("missed");
     }

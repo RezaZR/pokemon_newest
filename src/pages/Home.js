@@ -107,7 +107,7 @@ function Home({ history }) {
     }
     // set the scroll position to the selected target's offset position,
     // minus 32 because we have to adjust the offset according to the
-    // padding top and bottom that being placed which is 1rem + 1rem = 32px
+    // padding top and bottom that been placed which is 1rem + 1rem = 32px
     setScrollPosition(targetParent, target.offsetTop - 32);
     handleSelectedPokemon(target, pokemons.results[index], false);
   }
@@ -133,7 +133,10 @@ function Home({ history }) {
         <ContainerComponent>
           <SkeletonComponent>
             <CaseComponent>
-              <ScreenComponent className="normal-screen hide-scrollbar">
+              <ScreenComponent
+                className="hide-scrollbar"
+                childClasses="normal-screen"
+              >
                 <aside className="image-container">
                   {Object.keys(selectedPokemon).length !== 0 && (
                     <img

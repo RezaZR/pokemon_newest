@@ -70,7 +70,10 @@ function PokemonDetails({ match, location }) {
         <ContainerComponent>
           <SkeletonComponent>
             <CaseComponent>
-              <ScreenComponent className="normal-screen hide-scrollbar">
+              <ScreenComponent
+                className="hide-scrollbar"
+                childClasses="normal-screen"
+              >
                 <aside className="image-container">
                   <img
                     src={location.state}

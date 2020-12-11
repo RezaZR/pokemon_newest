@@ -1,3 +1,5 @@
+import HeaderComponent from "./Header";
+
 import styled from "@emotion/styled";
 
 const ScreenStyle = styled.div`
@@ -6,19 +8,23 @@ const ScreenStyle = styled.div`
   height: 100%;
   border-radius: 3px;
   box-shadow: inset 2px 2px var(--color-bg-3-1);
-  overflow: auto;
   padding: 1rem;
   filter: grayscale(1);
-  position: relative;
-  &.entire-screen {
+  & .entire-screen {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 29px);
+    margin-top: 29px;
   }
-  &.normal-screen {
+  & .normal-screen {
     display: flex;
+    margin-top: 29px;
+    position: relative;
+    width: 100%;
+    height: calc(100% - 29px);
+    overflow: auto;
     & .image-container {
       padding-right: 0.5rem;
       width: 40%;
@@ -59,6 +65,7 @@ const ScreenStyle = styled.div`
       overflow: auto;
       & .pokemon-list {
         border-radius: 3px;
+        cursor: pointer;
         & div {
           pointer-events: none;
         }
@@ -97,8 +104,13 @@ const ScreenStyle = styled.div`
   }
 `;
 
-function Screen({ children, ...rest }) {
-  return <ScreenStyle {...rest}>{children}</ScreenStyle>;
+function Screen({ childClasses, children, ...rest }) {
+  return (
+    <ScreenStyle {...rest}>
+      <HeaderComponent />
+      <div className={childClasses}>{children}</div>
+    </ScreenStyle>
+  );
 }
 
 export default Screen;

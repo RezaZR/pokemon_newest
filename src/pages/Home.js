@@ -111,6 +111,12 @@ function Home({ history }) {
     handleSelectedPokemon(target, pokemons.results[index], false);
   }
 
+  function goBack(e) {
+    e.preventDefault();
+
+    history.goBack();
+  }
+
   function goToSelectedPokemon(e) {
     e.preventDefault();
 
@@ -173,6 +179,7 @@ function Home({ history }) {
             <button onClick={(e) => handleClickNavigation(e, "bottom")}>
               Bottom
             </button>
+            <button onClick={goBack}>Back</button>
             <button onClick={goToSelectedPokemon}>Select</button>
           </SkeletonComponent>
         </ContainerComponent>

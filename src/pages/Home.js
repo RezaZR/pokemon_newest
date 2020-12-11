@@ -17,6 +17,7 @@ import ContainerComponent from "../components/Container";
 import SkeletonComponent from "../components/Skeleton";
 import CaseComponent from "../components/Case";
 import ScreenComponent from "../components/Screen";
+import NavigationComponent from "../components/Navigation";
 
 function Home({ history }) {
   const [limit, setLimit] = React.useState(10);
@@ -52,7 +53,7 @@ function Home({ history }) {
   function handleClickPagination(e, direction) {
     e.preventDefault();
     setSelectedPokemon({});
-    if (direction === "prev" && offset > 0) {
+    if (direction === "previous" && offset > 0) {
       if (offset - limit === 0) {
         setOffset(1);
       } else {
@@ -161,26 +162,14 @@ function Home({ history }) {
                 </ul>
               </ScreenComponent>
             </CaseComponent>
-            <button
-              onClick={(e) => handleClickPagination(e, "prev")}
-              disabled={!pokemons.previous}
-            >
-              Prev
-            </button>
-            <button
-              onClick={(e) => handleClickPagination(e, "next")}
-              disabled={!pokemons.next}
-            >
-              Next
-            </button>
-            <button onClick={(e) => handleClickNavigation(e, "top")}>
-              Top
-            </button>
-            <button onClick={(e) => handleClickNavigation(e, "bottom")}>
-              Bottom
-            </button>
-            <button onClick={goBack}>Back</button>
-            <button onClick={goToSelectedPokemon}>Select</button>
+            <NavigationComponent
+              previous={pokemons.previous}
+              next={pokemons.next}
+              handleClickNavigation={handleClickNavigation}
+              handleClickPagination={handleClickPagination}
+              goBack={goBack}
+              goToSelectedPokemon={goToSelectedPokemon}
+            />
           </SkeletonComponent>
         </ContainerComponent>
       )}

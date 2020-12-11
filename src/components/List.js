@@ -2,7 +2,7 @@ import React from "react";
 
 import { uppercaseFirstLetter } from "../helpers";
 
-function List({ pokemon, handleClickPokemon }) {
+function List({ pokemon, handleSelectedPokemon }) {
   const [ownedPokemons, setOwnedPokemons] = React.useState(() =>
     JSON.parse(localStorage.getItem("ownedPokemons"))
   );
@@ -10,7 +10,7 @@ function List({ pokemon, handleClickPokemon }) {
   return (
     <li
       className="pokemon-list"
-      onClick={(e) => handleClickPokemon(e, pokemon)}
+      onClick={(e) => handleSelectedPokemon(e, pokemon, true)}
     >
       <div className="pokemon-list__name">{pokemon.name}</div>
       <div className="pokemon-list__details">

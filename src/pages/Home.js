@@ -3,7 +3,11 @@ import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 
 import { GET_POKEMONS_LIST } from "../graphql";
-import { uppercaseFirstLetter, addOrRemoveClass } from "../helpers";
+import {
+  uppercaseFirstLetter,
+  addOrRemoveClass,
+  setScrollPosition,
+} from "../helpers";
 
 import ListComponent from "../components/List";
 
@@ -17,7 +21,7 @@ import ScreenComponent from "../components/Screen";
 function Home({ history }) {
   const [limit, setLimit] = React.useState(10);
   const [offset, setOffset] = React.useState(1);
-  const [activePokemon, setActivePokemon] = React.useState({});
+  const [selectedPokemon, setSelectedPokemon] = React.useState({});
 
   const { loading, error, data: { pokemons = [] } = {}, fetchMore } = useQuery(
     GET_POKEMONS_LIST,
@@ -29,21 +33,25 @@ function Home({ history }) {
   // if (loading) return "Loading...";
   if (error) return <ErrorPage />;
 
-  function handleClickPokemon(e, pokemon) {
-    e.preventDefault();
+  function handleSelectedPokemon(e, pokemon, isSynthetic) {
+    // check if it was coming from synthetic based event
+    if (isSynthetic) {
+      e.preventDefault();
+    }
+    const target = isSynthetic ? e.target : e;
     // remove class active from last selected pokemon
-    if (activePokemon.hasOwnProperty("lastTarget")) {
-      addOrRemoveClass(activePokemon.lastTarget, "remove", "active");
+    if (selectedPokemon.hasOwnProperty("lastTarget")) {
+      addOrRemoveClass(selectedPokemon.lastTarget, "remove", "active");
     }
     // then add class active to newly selected pokemon
-    addOrRemoveClass(e.target, "add", "active");
+    addOrRemoveClass(target, "add", "active");
 
-    setActivePokemon({ lastTarget: e.target, pokemon });
+    setSelectedPokemon({ lastTarget: target, pokemon });
   }
 
   function handleClickPagination(e, direction) {
     e.preventDefault();
-    setActivePokemon({});
+    setSelectedPokemon({});
     if (direction === "prev" && offset > 0) {
       if (offset - limit === 0) {
         setOffset(1);
@@ -64,12 +72,51 @@ function Home({ history }) {
     }
   }
 
+  function handleClickNavigation(e, direction) {
+    e.preventDefault();
+    let index = null;
+    const targetParent = document.querySelector("#Pokemon-List");
+    let target = null;
+    if (direction === "top") {
+      // if the user haven't selected a pokemon,
+      // else if the user already selected a pokemon
+      if (Object.keys(selectedPokemon).length === 0) {
+        index = pokemons.results.length - 2;
+        target = targetParent.children[index];
+      } else {
+        for (let i = 0; i < targetParent.children.length; i++) {
+          if (targetParent.children[i].classList.contains("active")) {
+            index = i === 0 ? targetParent.children.length - 1 : i - 1;
+            target = targetParent.children[index];
+          }
+        }
+      }
+    } else if (direction === "bottom") {
+      if (Object.keys(selectedPokemon).length === 0) {
+        index = 0;
+        target = targetParent.children[index];
+      } else {
+        for (let i = 0; i < targetParent.children.length; i++) {
+          if (targetParent.children[i].classList.contains("active")) {
+            index = i === pokemons.results.length - 2 ? 0 : i + 1;
+            target = targetParent.children[index];
+          }
+        }
+      }
+    }
+    // set the scroll position to the selected target's offset position,
+    // minus 32 because we have to adjust the offset according to the
+    // padding top and bottom that being placed which is 1rem + 1rem = 32px
+    setScrollPosition(targetParent, target.offsetTop - 32);
+    handleSelectedPokemon(target, pokemons.results[index], false);
+  }
+
   function goToSelectedPokemon(e) {
     e.preventDefault();
 
     history.push({
-      pathname: `/pokemon_details/${activePokemon.pokemon.name}`,
-      state: activePokemon.pokemon.image,
+      pathname: `/pokemon_details/${selectedPokemon.pokemon.name}`,
+      state: selectedPokemon.pokemon.image,
     });
   }
 
@@ -81,25 +128,28 @@ function Home({ history }) {
             <CaseComponent>
               <ScreenComponent className="normal-screen hide-scrollbar">
                 <aside className="image-container">
-                  {Object.keys(activePokemon).length !== 0 && (
+                  {Object.keys(selectedPokemon).length !== 0 && (
                     <img
-                      src={activePokemon.pokemon.image}
-                      alt={uppercaseFirstLetter(activePokemon.pokemon.name)}
+                      src={selectedPokemon.pokemon.image}
+                      alt={uppercaseFirstLetter(selectedPokemon.pokemon.name)}
                       title={`${uppercaseFirstLetter(
-                        activePokemon.pokemon.name
+                        selectedPokemon.pokemon.name
                       )}'s image`}
                     />
                   )}
                 </aside>
-                <ul className="content-container hide-scrollbar">
+                <ul
+                  className="content-container hide-scrollbar"
+                  id="Pokemon-List"
+                >
                   {pokemons.results &&
                     pokemons.results
                       .slice(0, 10)
-                      .map((pokemon) => (
+                      .map((pokemon, index) => (
                         <ListComponent
                           key={pokemon.name}
                           pokemon={pokemon}
-                          handleClickPokemon={handleClickPokemon}
+                          handleSelectedPokemon={handleSelectedPokemon}
                         />
                       ))}
                 </ul>
@@ -116,6 +166,12 @@ function Home({ history }) {
               disabled={!pokemons.next}
             >
               Next
+            </button>
+            <button onClick={(e) => handleClickNavigation(e, "top")}>
+              Top
+            </button>
+            <button onClick={(e) => handleClickNavigation(e, "bottom")}>
+              Bottom
             </button>
             <button onClick={goToSelectedPokemon}>Select</button>
           </SkeletonComponent>

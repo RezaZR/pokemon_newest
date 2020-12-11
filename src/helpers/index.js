@@ -14,4 +14,8 @@ function addOrRemoveClass(targetElement, condition, className) {
   }
 }
 
-export { uppercaseFirstLetter, addOrRemoveClass };
+function setScrollPosition(target, position) {
+  target.scrollTop = position;
+}
+
+export { uppercaseFirstLetter, addOrRemoveClass, setScrollPosition };

@@ -107,7 +107,7 @@ function MyPokemon({ history }) {
       }
     }
     // set the scroll position to the selected target's offset position
-    setScrollPosition(targetParent, target.offsetTop - 77);
+    setScrollPosition(targetParent, target.offsetTop - 73);
     handleSelectedPokemon(target, ownedPokemons[index], false, false);
   }
 

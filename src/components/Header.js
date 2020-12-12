@@ -7,13 +7,9 @@ import styled from "@emotion/styled";
 
 const HeaderStyle = styled.header`
   width: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 1rem 0 1rem;
   & nav {
     & ul {
       display: flex;

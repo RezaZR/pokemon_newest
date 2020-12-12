@@ -15,6 +15,7 @@ function addOrRemoveClass(targetElement, condition, className) {
 }
 
 function setScrollPosition(target, position) {
+  console.log(position);
   target.scrollTop = position;
 }
 

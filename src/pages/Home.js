@@ -104,10 +104,8 @@ function Home({ history }) {
         }
       }
     }
-    // set the scroll position to the selected target's offset position,
-    // minus 32 because we have to adjust the offset according to the
-    // padding top and bottom that been placed which is 1rem + 1rem = 32px
-    setScrollPosition(targetParent, target.offsetTop - 32);
+    // set the scroll position to the selected target's offset position
+    setScrollPosition(targetParent, target.offsetTop - 73);
     handleSelectedPokemon(target, pokemons.results[index], false);
   }
 

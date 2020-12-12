@@ -8,13 +8,13 @@ const ScreenStyle = styled.div`
   height: 100%;
   border-radius: 3px;
   box-shadow: inset 2px 2px var(--color-bg-3-1);
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   filter: grayscale(1);
   position: relative;
   & .full-screen {
     width: 100%;
-    height: calc(100% - 29px);
-    margin-top: 29px;
+    height: calc(100% - 2rem);
+    margin-top: 0.5rem;
     overflow: auto;
     &.center {
       display: flex;
@@ -28,9 +28,9 @@ const ScreenStyle = styled.div`
   }
   & .normal-screen {
     display: flex;
-    margin-top: 29px;
+    margin-top: 0.5rem;
     width: 100%;
-    height: calc(100% - 29px);
+    height: calc(100% - 2rem);
     overflow: auto;
     & .content-container {
       width: 60%;

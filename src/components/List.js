@@ -71,7 +71,7 @@ function List({ pokemon, handleSelectedPokemon, contentFor }) {
       ) : (
         <ListStyle
           className="space-between"
-          onClick={(e) => handleSelectedPokemon(e, pokemon, true)}
+          onClick={(e) => handleSelectedPokemon(e, pokemon, true, true)}
         >
           <div>
             <div className="pokemon-list__name">{pokemon.nickName}</div>

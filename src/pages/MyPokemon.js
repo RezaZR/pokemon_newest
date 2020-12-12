@@ -1,6 +1,10 @@
 import React from "react";
 
-import { addOrRemoveClass, setScrollPosition } from "../helpers";
+import {
+  uppercaseFirstLetter,
+  addOrRemoveClass,
+  setScrollPosition,
+} from "../helpers";
 
 import ListComponent from "../components/List";
 import ContainerComponent from "../components/Container";
@@ -8,6 +12,7 @@ import SkeletonComponent from "../components/Skeleton";
 import CaseComponent from "../components/Case";
 import ScreenComponent from "../components/Screen";
 import NavigationComponent from "../components/Navigation";
+import ModalComponent from "../components/Modal";
 
 function MyPokemon({ history }) {
   const [ownedPokemons, setOwnedPokemons] = React.useState(() =>
@@ -16,9 +21,14 @@ function MyPokemon({ history }) {
   const [selectedPokemon, setSelectedPokemon] = React.useState({});
 
   function releasePokemon(pokemon) {
+    // clear the current selected pokemon
+    addOrRemoveClass(selectedPokemon.lastTarget, "remove", "active");
+    setSelectedPokemon({});
+
     const index = ownedPokemons.indexOf(pokemon);
     if (index > -1) {
       ownedPokemons.splice(index, 1);
+      setOwnedPokemons(ownedPokemons);
     }
     try {
       localStorage.setItem("ownedPokemons", JSON.stringify(ownedPokemons));
@@ -27,7 +37,24 @@ function MyPokemon({ history }) {
     }
   }
 
-  function handleSelectedPokemon(e, pokemon, isSynthetic) {
+  function openCloseModal(e, pokemon, condition, isPickedYes) {
+    console.log("ahoy", e);
+    if (e) {
+      e.preventDefault();
+    }
+    const modalElement = document.querySelector("#Modal");
+    if (condition === "open") {
+      addOrRemoveClass(modalElement, "add", "active");
+    } else if (condition === "close") {
+      addOrRemoveClass(modalElement, "remove", "active");
+      // if the user pick "Yes", then release the pokemon
+      if (isPickedYes) {
+        releasePokemon(pokemon);
+      }
+    }
+  }
+
+  function handleSelectedPokemon(e, pokemon, isSynthetic, isOpenTheModal) {
     // check if it was coming from synthetic based event
     if (isSynthetic) {
       e.preventDefault();
@@ -39,7 +66,10 @@ function MyPokemon({ history }) {
     }
     // then add class active to newly selected pokemon
     addOrRemoveClass(target, "add", "active");
-    releasePokemon(pokemon);
+    // if true, open the modal dialogue
+    if (isOpenTheModal) {
+      openCloseModal(null, null, "open", null);
+    }
 
     setSelectedPokemon({ lastTarget: target, pokemon });
   }
@@ -78,7 +108,7 @@ function MyPokemon({ history }) {
     }
     // set the scroll position to the selected target's offset position
     setScrollPosition(targetParent, target.offsetTop - 77);
-    handleSelectedPokemon(target, ownedPokemons[index], false);
+    handleSelectedPokemon(target, ownedPokemons[index], false, false);
   }
 
   function goBack(e) {
@@ -117,12 +147,41 @@ function MyPokemon({ history }) {
                       />
                     ))}
                 </ul>
+                <ModalComponent id="Modal">
+                  {Object.keys(selectedPokemon).length !== 0 && (
+                    <div className="options">
+                      <p>
+                        You will delete{" "}
+                        {uppercaseFirstLetter(selectedPokemon.pokemon.nickName)}{" "}
+                        the {uppercaseFirstLetter(selectedPokemon.pokemon.name)}
+                        . Are you sure?
+                      </p>
+                      <button
+                        onClick={(e) => openCloseModal(e, null, "close", false)}
+                      >
+                        No
+                      </button>
+                      <button
+                        onClick={(e) =>
+                          openCloseModal(
+                            e,
+                            selectedPokemon.pokemon,
+                            "close",
+                            true
+                          )
+                        }
+                      >
+                        Yes
+                      </button>
+                    </div>
+                  )}
+                </ModalComponent>
               </ScreenComponent>
             </CaseComponent>
             <NavigationComponent
               handleClickNavigation={handleClickNavigation}
               goBack={goBack}
-              goToSelectedPokemon={goToSelectedPokemon}
+              goToSelectedPokemon={(e) => openCloseModal(e, null, "open", null)}
             />
           </SkeletonComponent>
         </ContainerComponent>

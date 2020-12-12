@@ -88,29 +88,6 @@ const ScreenStyle = styled.div`
       }
     }
   }
-  & .pokemon-list {
-    border-radius: 3px;
-    cursor: pointer;
-    text-transform: capitalize;
-    & div {
-      pointer-events: none;
-    }
-    & .pokemon-list__name {
-      font-size: 0.85rem;
-      font-weight: bold;
-    }
-    & .pokemon-list__details {
-      font-size: 0.75rem;
-    }
-    &:not(:last-of-type) {
-      margin-bottom: 0.35rem;
-    }
-    &:hover,
-    &.active {
-      background-color: var(--color-bg-3-1);
-      color: var(--color-bg-3);
-    }
-  }
 `;
 
 function Screen({ childClasses, children, ...rest }) {

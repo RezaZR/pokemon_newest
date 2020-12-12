@@ -20,7 +20,7 @@ const HeaderStyle = styled.header`
       align-items: center;
       & li {
         &:not(:last-child) {
-          margin-right: 0.75rem;
+          margin-right: 0.5rem;
         }
         & a {
           padding: 0.25rem;

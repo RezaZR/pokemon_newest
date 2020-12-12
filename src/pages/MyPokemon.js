@@ -2,8 +2,6 @@ import React from "react";
 
 import { addOrRemoveClass, setScrollPosition } from "../helpers";
 
-import ErrorPage from "./Error";
-
 import ListComponent from "../components/List";
 import ContainerComponent from "../components/Container";
 import SkeletonComponent from "../components/Skeleton";
@@ -17,6 +15,18 @@ function MyPokemon({ history }) {
   );
   const [selectedPokemon, setSelectedPokemon] = React.useState({});
 
+  function releasePokemon(pokemon) {
+    const index = ownedPokemons.indexOf(pokemon);
+    if (index > -1) {
+      ownedPokemons.splice(index, 1);
+    }
+    try {
+      localStorage.setItem("ownedPokemons", JSON.stringify(ownedPokemons));
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   function handleSelectedPokemon(e, pokemon, isSynthetic) {
     // check if it was coming from synthetic based event
     if (isSynthetic) {
@@ -29,6 +39,7 @@ function MyPokemon({ history }) {
     }
     // then add class active to newly selected pokemon
     addOrRemoveClass(target, "add", "active");
+    releasePokemon(pokemon);
 
     setSelectedPokemon({ lastTarget: target, pokemon });
   }
@@ -101,6 +112,7 @@ function MyPokemon({ history }) {
                       <ListComponent
                         key={`${pokemon.name}-${index}`}
                         pokemon={pokemon}
+                        handleSelectedPokemon={handleSelectedPokemon}
                         contentFor="mypokemon"
                       />
                     ))}

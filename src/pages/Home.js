@@ -9,10 +9,9 @@ import {
   setScrollPosition,
 } from "../helpers";
 
-import ListComponent from "../components/List";
-
 import ErrorPage from "./Error";
 
+import ListComponent from "../components/List";
 import ContainerComponent from "../components/Container";
 import SkeletonComponent from "../components/Skeleton";
 import CaseComponent from "../components/Case";
@@ -155,11 +154,12 @@ function Home({ history }) {
                   {pokemons.results &&
                     pokemons.results
                       .slice(0, 10)
-                      .map((pokemon, index) => (
+                      .map((pokemon) => (
                         <ListComponent
                           key={pokemon.name}
                           pokemon={pokemon}
                           handleSelectedPokemon={handleSelectedPokemon}
+                          contentFor="home"
                         />
                       ))}
                 </ul>

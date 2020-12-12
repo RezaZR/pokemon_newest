@@ -15,7 +15,9 @@ function addOrRemoveClass(targetElement, condition, className) {
 }
 
 function setScrollPosition(target, position) {
+  console.log(target.scrollTop, position);
   target.scrollTop = position;
+  console.log(target.scrollTop);
 }
 
 export { uppercaseFirstLetter, addOrRemoveClass, setScrollPosition };

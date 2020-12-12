@@ -164,12 +164,10 @@ function Home({ history }) {
               </ScreenComponent>
             </CaseComponent>
             <NavigationComponent
-              previous={pokemons.previous}
-              next={pokemons.next}
               handleClickNavigation={handleClickNavigation}
               handleClickPagination={handleClickPagination}
-              goBack={goBack}
-              goToSelectedPokemon={goToSelectedPokemon}
+              handleBackButton={goBack}
+              handleSelectButton={goToSelectedPokemon}
             />
           </SkeletonComponent>
         </ContainerComponent>

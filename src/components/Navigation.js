@@ -99,12 +99,10 @@ const NavigationStyle = styled.div`
 `;
 
 function Navigation({
-  previous,
-  next,
   handleClickNavigation,
   handleClickPagination,
-  goBack,
-  goToSelectedPokemon,
+  handleBackButton,
+  handleSelectButton,
 }) {
   return (
     <NavigationStyle>
@@ -112,7 +110,6 @@ function Navigation({
         <button
           className="previous"
           onClick={(e) => handleClickPagination(e, "previous")}
-          disabled={!previous}
           title="Button left"
         >
           ◀
@@ -120,7 +117,6 @@ function Navigation({
         <button
           className="next"
           onClick={(e) => handleClickPagination(e, "next")}
-          disabled={!next}
           title="Button right"
         >
           ▶
@@ -144,12 +140,12 @@ function Navigation({
         </button>
       </section>
       <section className="navigator-circle">
-        <button className="back" onClick={goBack} title="Button back">
+        <button className="back" onClick={handleBackButton} title="Button back">
           ○
         </button>
         <button
           className="select"
-          onClick={goToSelectedPokemon}
+          onClick={handleSelectButton}
           title="Button select"
         >
           ✕

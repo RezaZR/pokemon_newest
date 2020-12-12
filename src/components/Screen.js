@@ -42,6 +42,7 @@ const ScreenStyle = styled.div`
     width: 40%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
@@ -50,23 +51,12 @@ const ScreenStyle = styled.div`
       object-fit: cover;
     }
     & .button-catch {
-      opacity: 0;
-      visibility: hidden;
       width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      & svg {
-        width: 35%;
-      }
-    }
-    &:hover {
-      & .button-catch {
-        opacity: 1;
-        visibility: visible;
-        background-color: var(--color-bg-2-035);
+      border-radius: 3px;
+      &:hover,
+      &.active {
+        background-color: var(--color-bg-2);
+        color: var(--color-bg-3);
       }
     }
   }
@@ -93,7 +83,7 @@ const ScreenStyle = styled.div`
 function Screen({ childClasses, children, ...rest }) {
   return (
     <ScreenStyle {...rest}>
-      <HeaderComponent />
+      <HeaderComponent id="Header" />
       <div className={childClasses}>{children}</div>
     </ScreenStyle>
   );

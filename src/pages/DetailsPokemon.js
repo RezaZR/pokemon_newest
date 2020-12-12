@@ -3,7 +3,7 @@ import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 
 import { GET_POKEMON } from "../graphql";
-import { uppercaseFirstLetter } from "../helpers";
+import { uppercaseFirstLetter, addOrRemoveClass } from "../helpers";
 
 import ErrorPage from "./Error";
 
@@ -11,11 +11,13 @@ import ContainerComponent from "../components/Container";
 import SkeletonComponent from "../components/Skeleton";
 import CaseComponent from "../components/Case";
 import ScreenComponent from "../components/Screen";
+import NavigationComponent from "../components/Navigation";
 
-import PokemonAsset from "../components/assets/Pokemon";
-
-function PokemonDetails({ match, location }) {
+function PokemonDetails({ match, location, history }) {
   const [catchStatus, setCatchStatus] = React.useState(null);
+  const [id, setId] = React.useState(null);
+  const [targetParent, setTargetParent] = React.useState(null);
+  const [target, setTarget] = React.useState(null);
 
   const { loading, error, data: { pokemon = {} } = {} } = useQuery(
     GET_POKEMON,
@@ -64,6 +66,115 @@ function PokemonDetails({ match, location }) {
     }
   }
 
+  function handleClickNavigation(e, direction) {
+    e.preventDefault();
+    let index = null;
+    let idLocal = null;
+    let targetParentLocal = null;
+    let targetLocal = null;
+    // if navigation been operated, do it based on direction
+    // else whichever the direction is, just focus on Catch Button
+    if (targetParent) {
+      if (direction === "top") {
+        // if id is #Catch then select the My Pokemon Page
+        // else if id is #Header nav ul
+        if (id === "#Catch") {
+          addOrRemoveClass(target, "remove", "active");
+          index = 1;
+          idLocal = "#Header nav ul";
+          setId(idLocal);
+          targetParentLocal = document.querySelector(idLocal);
+          setTargetParent(targetParentLocal);
+          targetLocal = targetParentLocal.children[index];
+          setTarget(targetLocal);
+          addOrRemoveClass(targetLocal, "add", "active");
+        } else if (id === "#Header nav ul") {
+          // first check which index is the current active children
+          // if index is 0, then we go to the Catch Button
+          // else if index is 1, then we go to its sibling element
+          for (let i = 0; i < targetParent.children.length; i++) {
+            if (targetParent.children[i].classList.contains("active")) {
+              index = i;
+              break;
+            }
+          }
+          addOrRemoveClass(target, "remove", "active");
+          if (index === 0) {
+            idLocal = "#Catch";
+            setId(idLocal);
+            targetParentLocal = document.querySelector(idLocal);
+            setTargetParent(targetParentLocal);
+            targetLocal = targetParentLocal.children[1];
+            setTarget(targetLocal);
+            addOrRemoveClass(targetLocal, "add", "active");
+          } else if (index === 1) {
+            targetLocal = targetParent.children[index - 1];
+            setTarget(targetLocal);
+            addOrRemoveClass(targetLocal, "add", "active");
+          }
+        }
+      } else if (direction === "bottom") {
+        if (id === "#Catch") {
+          addOrRemoveClass(target, "remove", "active");
+          index = 0;
+          idLocal = "#Header nav ul";
+          setId(idLocal);
+          targetParentLocal = document.querySelector(idLocal);
+          setTargetParent(targetParentLocal);
+          targetLocal = targetParentLocal.children[index];
+          setTarget(targetLocal);
+          addOrRemoveClass(targetLocal, "add", "active");
+        } else if (id === "#Header nav ul") {
+          for (let i = 0; i < targetParent.children.length; i++) {
+            if (targetParent.children[i].classList.contains("active")) {
+              index = i;
+              break;
+            }
+          }
+          addOrRemoveClass(target, "remove", "active");
+          if (index === 0) {
+            targetLocal = targetParent.children[index + 1];
+            setTarget(targetLocal);
+            addOrRemoveClass(targetLocal, "add", "active");
+          } else if (index === 1) {
+            idLocal = "#Catch";
+            setId(idLocal);
+            targetParentLocal = document.querySelector(idLocal);
+            setTargetParent(targetParentLocal);
+            targetLocal = targetParentLocal.children[1];
+            setTarget(targetLocal);
+            addOrRemoveClass(targetLocal, "add", "active");
+          }
+        }
+      }
+    } else {
+      index = 1;
+      idLocal = "#Catch";
+      setId(idLocal);
+      targetParentLocal = document.querySelector(idLocal);
+      setTargetParent(targetParentLocal);
+      targetLocal = targetParentLocal.children[index];
+      setTarget(targetLocal);
+      addOrRemoveClass(targetLocal, "add", "active");
+    }
+  }
+
+  function goBack(e) {
+    e.preventDefault();
+
+    history.goBack();
+  }
+
+  function handleSelectButton(e) {
+    e.preventDefault();
+    if (id === "#Button-Catch") {
+      catchPokemon(e);
+    } else if (id === "#Header nav ul") {
+      console.log(target);
+      target.children[0].click();
+    }
+  }
+
   return (
     <>
       {Object.keys(pokemon).length !== 0 && (
@@ -74,7 +185,7 @@ function PokemonDetails({ match, location }) {
                 className="hide-scrollbar"
                 childClasses="normal-screen"
               >
-                <aside className="image-container">
+                <aside className="image-container" id="Catch">
                   <img
                     src={location.state}
                     alt={uppercaseFirstLetter(pokemon.name)}
@@ -85,10 +196,7 @@ function PokemonDetails({ match, location }) {
                     onClick={catchPokemon}
                     title="Catch!"
                   >
-                    <PokemonAsset
-                      title="Catch!"
-                      desc="Button to catch pokemon"
-                    />
+                    Catch!
                   </button>
                   {catchStatus}
                 </aside>
@@ -122,6 +230,11 @@ function PokemonDetails({ match, location }) {
                 </div>
               </ScreenComponent>
             </CaseComponent>
+            <NavigationComponent
+              handleClickNavigation={handleClickNavigation}
+              handleBackButton={goBack}
+              handleSelectButton={handleSelectButton}
+            />
           </SkeletonComponent>
         </ContainerComponent>
       )}

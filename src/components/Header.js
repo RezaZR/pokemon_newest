@@ -27,7 +27,10 @@ const HeaderStyle = styled.header`
             width: 17px;
             fill: var(--color-bg-2);
           }
-          &:hover {
+        }
+        &:hover,
+        &.active {
+          & a {
             background-color: var(--color-bg-2);
             & svg {
               fill: var(--color-bg-3);
@@ -39,9 +42,9 @@ const HeaderStyle = styled.header`
   }
 `;
 
-function Header() {
+function Header({ ...rest }) {
   return (
-    <HeaderStyle>
+    <HeaderStyle {...rest}>
       <div>&nbsp;</div>
       <nav>
         <ul>

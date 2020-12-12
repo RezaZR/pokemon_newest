@@ -38,7 +38,6 @@ function MyPokemon({ history }) {
   }
 
   function openCloseModal(e, pokemon, condition, isPickedYes) {
-    console.log("ahoy", e);
     if (e) {
       e.preventDefault();
     }
@@ -117,15 +116,6 @@ function MyPokemon({ history }) {
     history.goBack();
   }
 
-  function goToSelectedPokemon(e) {
-    e.preventDefault();
-
-    history.push({
-      pathname: `/pokemon_details/${selectedPokemon.pokemon.name}`,
-      state: selectedPokemon.pokemon.image,
-    });
-  }
-
   return (
     <>
       {ownedPokemons && (
@@ -180,8 +170,12 @@ function MyPokemon({ history }) {
             </CaseComponent>
             <NavigationComponent
               handleClickNavigation={handleClickNavigation}
-              goBack={goBack}
-              goToSelectedPokemon={(e) => openCloseModal(e, null, "open", null)}
+              handleBackButton={goBack}
+              handleSelectButton={(e) =>
+                Object.keys(selectedPokemon).length !== 0
+                  ? openCloseModal(e, null, "open", null)
+                  : null
+              }
             />
           </SkeletonComponent>
         </ContainerComponent>

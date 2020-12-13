@@ -18,6 +18,8 @@ import CaseComponent from "../components/Case";
 import ScreenComponent from "../components/Screen";
 import NavigationComponent from "../components/Navigation";
 
+import LoadingAsset from "../components/assets/Loading";
+
 function Home({ history }) {
   const [limit, setLimit] = React.useState(10);
   const [offset, setOffset] = React.useState(1);
@@ -33,7 +35,6 @@ function Home({ history }) {
     }
   );
 
-  // if (loading) return "Loading...";
   if (error) return <ErrorPage />;
 
   function handleSelectedPokemon(e, pokemon, isSynthetic) {
@@ -232,35 +233,47 @@ function Home({ history }) {
             <CaseComponent>
               <ScreenComponent
                 className="hide-scrollbar"
-                childClasses="normal-screen"
+                childClasses={loading ? "full-screen center" : "normal-screen"}
               >
-                <aside className="image-container">
-                  {Object.keys(selectedPokemon).length !== 0 && (
-                    <img
-                      src={selectedPokemon.pokemon.image}
-                      alt={uppercaseFirstLetter(selectedPokemon.pokemon.name)}
-                      title={`${uppercaseFirstLetter(
-                        selectedPokemon.pokemon.name
-                      )}'s image`}
-                    />
-                  )}
-                </aside>
-                <ul
-                  className="content-container hide-scrollbar"
-                  id="Pokemon-List"
-                >
-                  {pokemons.results &&
-                    pokemons.results
-                      .slice(0, 10)
-                      .map((pokemon) => (
-                        <ListComponent
-                          key={pokemon.name}
-                          pokemon={pokemon}
-                          handleSelectedPokemon={handleSelectedPokemon}
-                          contentFor="home"
+                {loading ? (
+                  <LoadingAsset
+                    className="text-alone"
+                    title="Loading"
+                    desc="Loading text"
+                  />
+                ) : (
+                  <>
+                    <aside className="image-container">
+                      {Object.keys(selectedPokemon).length !== 0 && (
+                        <img
+                          src={selectedPokemon.pokemon.image}
+                          alt={uppercaseFirstLetter(
+                            selectedPokemon.pokemon.name
+                          )}
+                          title={`${uppercaseFirstLetter(
+                            selectedPokemon.pokemon.name
+                          )}'s image`}
                         />
-                      ))}
-                </ul>
+                      )}
+                    </aside>
+                    <ul
+                      className="content-container hide-scrollbar"
+                      id="Pokemon-List"
+                    >
+                      {pokemons.results &&
+                        pokemons.results
+                          .slice(0, 10)
+                          .map((pokemon) => (
+                            <ListComponent
+                              key={pokemon.name}
+                              pokemon={pokemon}
+                              handleSelectedPokemon={handleSelectedPokemon}
+                              contentFor="home"
+                            />
+                          ))}
+                    </ul>
+                  </>
+                )}
               </ScreenComponent>
             </CaseComponent>
             <NavigationComponent

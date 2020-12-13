@@ -10,8 +10,8 @@ const NavigationStyle = styled.div`
   margin-top: 2rem;
   & .navigator-arrow {
     position: relative;
-    width: 117px;
-    height: 117px;
+    width: 116px;
+    height: 116px;
     & button {
       background-color: var(--color-bg-2);
       color: var(--color-bg-3-1);
@@ -102,7 +102,7 @@ const NavigationStyle = styled.div`
     & .back {
       left: 0;
       bottom: 17%;
-      transform: translateY(-17%);
+      transform: translateY(17%);
     }
     & .select {
       right: 0;

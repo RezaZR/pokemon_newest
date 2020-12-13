@@ -49,6 +49,7 @@ const ScreenStyle = styled.div`
     & img {
       width: 100%;
       object-fit: cover;
+      animation: bounce 2s ease infinite;
     }
     & .button-catch {
       width: 100%;

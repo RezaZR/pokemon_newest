@@ -14,6 +14,8 @@ import ScreenComponent from "../components/Screen";
 import NavigationComponent from "../components/Navigation";
 import ModalComponent from "../components/Modal";
 
+import EmptyAsset from "../components/assets/Empty";
+
 function MyPokemon({ history }) {
   const [ownedPokemons, setOwnedPokemons] = React.useState(() =>
     JSON.parse(localStorage.getItem("ownedPokemons"))
@@ -74,13 +76,18 @@ function MyPokemon({ history }) {
     }
   }
 
-  function handleSelectedPokemon(e, pokemon, isSynthetic, isOpenTheModal) {
+  async function handleSelectedPokemon(
+    e,
+    pokemon,
+    isSynthetic,
+    isOpenTheModal
+  ) {
     // check if it was coming from synthetic based event
     if (isSynthetic) {
       e.preventDefault();
       const idLocal = "#My-Pokemon-List";
       const targetParentLocal = document.querySelector(idLocal);
-      const targetLocal = e.target;
+      const targetLocal = await e.target;
       setId(idLocal);
       setTargetParent(targetParentLocal);
       setTarget(targetLocal);
@@ -110,7 +117,7 @@ function MyPokemon({ history }) {
     // else if haven't been operated, set the first on the list to selected pokemon
     if (targetParent) {
       if ((direction === "top" || direction === "bottom") && !isModalActive) {
-        if (id === "#My-Pokemon-List") {
+        if (id === "#My-Pokemon-List" && ownedPokemons.length > 0) {
           for (let i = 0; i < targetParent.children.length; i++) {
             if (targetParent.children[i].classList.contains("active")) {
               index = direction === "top" ? i - 1 : i + 1;
@@ -164,25 +171,37 @@ function MyPokemon({ history }) {
             (direction === "top" && index === 0) ||
             (direction === "bottom" && index === 1)
           ) {
-            idLocal = "#My-Pokemon-List";
-            targetParentLocal = document.querySelector(idLocal);
-            targetLocal =
-              targetParentLocal.children[
-                direction === "top" ? ownedPokemons.length - 1 : 0
-              ];
-            addOrRemoveClass(targetLocal, "add", "active");
-            // set them to the state
-            setId(idLocal);
-            setTargetParent(targetParentLocal);
-            setTarget(targetLocal);
-            // set the scroll position to the selected target's offset position
-            setScrollPosition(targetParentLocal, targetLocal.offsetTop - 73);
+            if (ownedPokemons.length > 0) {
+              idLocal = "#My-Pokemon-List";
+              targetParentLocal = document.querySelector(idLocal);
+              targetLocal =
+                targetParentLocal.children[
+                  direction === "top" ? ownedPokemons.length - 1 : 0
+                ];
+              addOrRemoveClass(targetLocal, "add", "active");
+              // set them to the state
+              setId(idLocal);
+              setTargetParent(targetParentLocal);
+              setTarget(targetLocal);
+              // set the scroll position to the selected target's offset position
+              setScrollPosition(targetParentLocal, targetLocal.offsetTop - 73);
 
-            handleSelectedPokemon(
-              targetLocal,
-              ownedPokemons[direction === "top" ? ownedPokemons.length - 1 : 0],
-              false
-            );
+              handleSelectedPokemon(
+                targetLocal,
+                ownedPokemons[
+                  direction === "top" ? ownedPokemons.length - 1 : 0
+                ],
+                false
+              );
+            } else {
+              targetLocal =
+                targetParent.children[
+                  direction === "top" ? index + 1 : index - 1
+                ];
+              addOrRemoveClass(targetLocal, "add", "active");
+              // set them to the state
+              setTarget(targetLocal);
+            }
           }
         }
       } else if (
@@ -209,7 +228,11 @@ function MyPokemon({ history }) {
         setTarget(targetLocal);
       }
     } else {
-      if ((direction === "top" || direction === "bottom") && !isModalActive) {
+      if (
+        (direction === "top" || direction === "bottom") &&
+        !isModalActive &&
+        ownedPokemons.length > 0
+      ) {
         index = 0;
         idLocal = "#My-Pokemon-List";
         targetParentLocal = document.querySelector(idLocal);
@@ -223,6 +246,15 @@ function MyPokemon({ history }) {
         setScrollPosition(targetParentLocal, targetLocal.offsetTop - 73);
 
         handleSelectedPokemon(targetLocal, ownedPokemons[index], false);
+      } else if (ownedPokemons.length === 0) {
+        idLocal = "#Header nav ul";
+        targetParentLocal = document.querySelector(idLocal);
+        targetLocal = targetParentLocal.children[1];
+        addOrRemoveClass(targetLocal, "add", "active");
+        // set them to the state
+        setId(idLocal);
+        setTargetParent(targetParentLocal);
+        setTarget(targetLocal);
       }
     }
   }
@@ -251,64 +283,83 @@ function MyPokemon({ history }) {
 
   return (
     <>
-      {ownedPokemons && (
-        <ContainerComponent>
-          <SkeletonComponent>
-            <CaseComponent>
-              <ScreenComponent childClasses="full-screen hide-scrollbar">
-                <ul
-                  className="content-container hide-scrollbar"
-                  id="My-Pokemon-List"
-                >
-                  {ownedPokemons &&
-                    ownedPokemons.map((pokemon, index) => (
-                      <ListComponent
-                        key={`${pokemon.name}-${index}`}
-                        pokemon={pokemon}
-                        handleSelectedPokemon={handleSelectedPokemon}
-                        contentFor="mypokemon"
-                      />
-                    ))}
-                </ul>
-                <ModalComponent id="Modal">
-                  {Object.keys(selectedPokemon).length !== 0 && (
-                    <div className="options">
-                      <p>
-                        You will delete{" "}
-                        {uppercaseFirstLetter(selectedPokemon.pokemon.nickName)}{" "}
-                        the {uppercaseFirstLetter(selectedPokemon.pokemon.name)}
-                        . Are you sure?
-                      </p>
-                      <button
-                        onClick={(e) => openCloseModal(e, null, "close", false)}
-                      >
-                        No
-                      </button>
-                      <button
-                        onClick={(e) =>
-                          openCloseModal(
-                            e,
-                            selectedPokemon.pokemon,
-                            "close",
-                            true
-                          )
-                        }
-                      >
-                        Yes
-                      </button>
-                    </div>
-                  )}
-                </ModalComponent>
-              </ScreenComponent>
-            </CaseComponent>
-            <NavigationComponent
-              handleClickNavigation={handleClickNavigation}
-              handleBackButton={goBack}
-              handleSelectButton={handleSelectButton}
-            />
-          </SkeletonComponent>
-        </ContainerComponent>
-      )}
+      <ContainerComponent>
+        <SkeletonComponent>
+          <CaseComponent>
+            <ScreenComponent
+              childClasses={
+                ownedPokemons.length > 0
+                  ? "full-screen hide-scrollbar"
+                  : "full-screen hide-scrollbar center"
+              }
+            >
+              {ownedPokemons.length > 0 ? (
+                <>
+                  <ul
+                    className="content-container hide-scrollbar"
+                    id="My-Pokemon-List"
+                  >
+                    {ownedPokemons &&
+                      ownedPokemons.map((pokemon, index) => (
+                        <ListComponent
+                          key={`${pokemon.name}-${index}`}
+                          pokemon={pokemon}
+                          handleSelectedPokemon={handleSelectedPokemon}
+                          contentFor="mypokemon"
+                        />
+                      ))}
+                  </ul>
+                  <ModalComponent id="Modal">
+                    {Object.keys(selectedPokemon).length !== 0 && (
+                      <div className="options">
+                        <p>
+                          You will delete{" "}
+                          {uppercaseFirstLetter(
+                            selectedPokemon.pokemon.nickName
+                          )}{" "}
+                          the{" "}
+                          {uppercaseFirstLetter(selectedPokemon.pokemon.name)}.
+                          Are you sure?
+                        </p>
+                        <button
+                          onClick={(e) =>
+                            openCloseModal(e, null, "close", false)
+                          }
+                        >
+                          No
+                        </button>
+                        <button
+                          onClick={(e) =>
+                            openCloseModal(
+                              e,
+                              selectedPokemon.pokemon,
+                              "close",
+                              true
+                            )
+                          }
+                        >
+                          Yes
+                        </button>
+                      </div>
+                    )}
+                  </ModalComponent>
+                </>
+              ) : (
+                <EmptyAsset
+                  className="text-alone"
+                  title="Empty"
+                  desc="Empty text"
+                />
+              )}
+            </ScreenComponent>
+          </CaseComponent>
+          <NavigationComponent
+            handleClickNavigation={handleClickNavigation}
+            handleBackButton={goBack}
+            handleSelectButton={handleSelectButton}
+          />
+        </SkeletonComponent>
+      </ContainerComponent>
     </>
   );
 }

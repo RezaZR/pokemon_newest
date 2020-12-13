@@ -14,6 +14,8 @@ import ScreenComponent from "../components/Screen";
 import NavigationComponent from "../components/Navigation";
 import ModalComponent from "../components/Modal";
 
+import LoadingAsset from "../components/assets/Loading";
+
 function PokemonDetails({ match, location, history }) {
   const [catchStatus, setCatchStatus] = React.useState(null);
   const [id, setId] = React.useState(null);
@@ -254,73 +256,83 @@ function PokemonDetails({ match, location, history }) {
                 className="hide-scrollbar"
                 childClasses="normal-screen"
               >
-                <aside className="image-container" id="Catch">
-                  <img
-                    src={location.state}
-                    alt={uppercaseFirstLetter(pokemon.name)}
-                    title={`${uppercaseFirstLetter(pokemon.name)}'s image`}
+                {loading ? (
+                  <LoadingAsset
+                    className="text-alone"
+                    title="Loading"
+                    desc="Loading text"
                   />
-                  <button
-                    className="button-transparent button-catch"
-                    onClick={catchPokemon}
-                    title="Catch!"
-                  >
-                    Catch!
-                  </button>
-                </aside>
-                <div className="content-container hide-scrollbar">
-                  <section className="sectioned-blocks">
-                    <p className="sectioned-blocks__title">Name:</p>
-                    <h1 className="sectioned-blocks__content">
-                      {pokemon.name}
-                    </h1>
-                  </section>
-                  <section className="sectioned-blocks">
-                    <p className="sectioned-blocks__title">Types:</p>
-                    {pokemon.types && (
-                      <ul className="sectioned-blocks__content">
-                        {pokemon.types.map(({ type }) => (
-                          <li key={type.name}>{type.name}</li>
+                ) : (
+                  <>
+                    <aside className="image-container" id="Catch">
+                      <img
+                        src={location.state}
+                        alt={uppercaseFirstLetter(pokemon.name)}
+                        title={`${uppercaseFirstLetter(pokemon.name)}'s image`}
+                      />
+                      <button
+                        className="button-transparent button-catch"
+                        onClick={catchPokemon}
+                        title="Catch!"
+                      >
+                        Catch!
+                      </button>
+                    </aside>
+                    <div className="content-container hide-scrollbar">
+                      <section className="sectioned-blocks">
+                        <p className="sectioned-blocks__title">Name:</p>
+                        <h1 className="sectioned-blocks__content">
+                          {pokemon.name}
+                        </h1>
+                      </section>
+                      <section className="sectioned-blocks">
+                        <p className="sectioned-blocks__title">Types:</p>
+                        {pokemon.types && (
+                          <ul className="sectioned-blocks__content">
+                            {pokemon.types.map(({ type }) => (
+                              <li key={type.name}>{type.name}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </section>
+                      <section className="sectioned-blocks">
+                        <p className="sectioned-blocks__title">Moves:</p>
+                        {pokemon.moves && (
+                          <ul className="sectioned-blocks__content">
+                            {pokemon.moves.map(({ move }) => (
+                              <li key={move.name}>{move.name}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </section>
+                    </div>
+                    <ModalComponent id="Modal">
+                      {isModalActive &&
+                        (catchStatus === "missed" ? (
+                          <div className="options">
+                            <p>You missed</p>
+                            <button onClick={(e) => openCloseModal(e, "close")}>
+                              Ok
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="options">
+                            <p>You catch em!</p>
+                            <form onSubmit={handleSubmitNickName}>
+                              <input
+                                type="text"
+                                required={true}
+                                name="nickName"
+                                id="nickName"
+                                ref={nickNameRef}
+                              />
+                              <button>Ok</button>
+                            </form>
+                          </div>
                         ))}
-                      </ul>
-                    )}
-                  </section>
-                  <section className="sectioned-blocks">
-                    <p className="sectioned-blocks__title">Moves:</p>
-                    {pokemon.moves && (
-                      <ul className="sectioned-blocks__content">
-                        {pokemon.moves.map(({ move }) => (
-                          <li key={move.name}>{move.name}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </section>
-                </div>
-                <ModalComponent id="Modal">
-                  {isModalActive &&
-                    (catchStatus === "missed" ? (
-                      <div className="options">
-                        <p>You missed</p>
-                        <button onClick={(e) => openCloseModal(e, "close")}>
-                          Ok
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="options">
-                        <p>You catch em!</p>
-                        <form onSubmit={handleSubmitNickName}>
-                          <input
-                            type="text"
-                            required={true}
-                            name="nickName"
-                            id="nickName"
-                            ref={nickNameRef}
-                          />
-                          <button>Ok</button>
-                        </form>
-                      </div>
-                    ))}
-                </ModalComponent>
+                    </ModalComponent>
+                  </>
+                )}
               </ScreenComponent>
             </CaseComponent>
             <NavigationComponent

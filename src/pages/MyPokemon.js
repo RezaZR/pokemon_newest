@@ -52,10 +52,9 @@ function MyPokemon({ history }) {
     if (condition === "open") {
       addOrRemoveClass(modalElement, "add", "active");
       setIsModalActive(true);
-      // clear the last target
+      // target to modal button no
       const idLocal = "#Modal";
       const targetParentLocal = await document.querySelector(idLocal);
-      console.log(targetParentLocal.children[0]);
       const targetLocal = targetParentLocal.children[0].children[1];
       addOrRemoveClass(targetLocal, "add", "active");
       setId(idLocal);
@@ -108,7 +107,7 @@ function MyPokemon({ history }) {
     let targetParentLocal = null;
     let targetLocal = null;
     // if navigation been operated, do it based on direction
-    // else if haven't been operated, check the direction is it vertical or horizontal
+    // else if haven't been operated, set the first on the list to selected pokemon
     if (targetParent) {
       if ((direction === "top" || direction === "bottom") && !isModalActive) {
         if (id === "#My-Pokemon-List") {
@@ -190,7 +189,6 @@ function MyPokemon({ history }) {
         (direction === "left" || direction === "right") &&
         isModalActive
       ) {
-        console.log(target);
         for (let i = 0; i < targetParent.children[0].children.length; i++) {
           if (
             targetParent.children[0].children[i].classList.contains("active")
@@ -206,7 +204,6 @@ function MyPokemon({ history }) {
         } else if (direction === "right") {
           targetLocal = targetParent.children[0].children[index === 1 ? 2 : 1];
         }
-        console.log(index, targetLocal);
         addOrRemoveClass(targetLocal, "add", "active");
         // set them to the state
         setTarget(targetLocal);

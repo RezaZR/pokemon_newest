@@ -20,6 +20,9 @@ const ModalStyle = styled.section`
       font-size: 1rem;
       margin-bottom: 1rem;
     }
+    & input {
+      margin-bottom: 1rem;
+    }
     & button {
       font-size: 0.85rem;
       width: 50px;

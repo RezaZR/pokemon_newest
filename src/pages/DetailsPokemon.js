@@ -20,7 +20,6 @@ function PokemonDetails({ match, location, history }) {
   const [targetParent, setTargetParent] = React.useState(null);
   const [target, setTarget] = React.useState(null);
   const [isModalActive, setIsModalActive] = React.useState(false);
-  const [catchedPokemon, setCatchedPokemon] = React.useState({});
 
   const nickNameRef = React.useRef(null);
 
@@ -35,6 +34,19 @@ function PokemonDetails({ match, location, history }) {
 
   function catchPokemon(e) {
     e.preventDefault();
+    if (!targetParent) {
+      // we need to store id, targetParent and target before go through the next step
+      const idLocal = "#Catch";
+      const targetParentLocal = document.querySelector(idLocal);
+      const targetLocal = targetParentLocal.children[1];
+      addOrRemoveClass(targetLocal, "add", "active");
+      // set them to the state
+      setId(idLocal);
+      setTargetParent(targetParentLocal);
+      setTarget(targetLocal);
+      // immediately remove the active class
+      addOrRemoveClass(targetLocal, "remove", "active");
+    }
 
     const result = Math.random();
     let status = "";
@@ -45,7 +57,9 @@ function PokemonDetails({ match, location, history }) {
     }
     setCatchStatus(status);
     // clear the last target then open the modal
-    addOrRemoveClass(target, "remove", "active");
+    if (targetParent) {
+      addOrRemoveClass(target, "remove", "active");
+    }
     setId(null);
     setTargetParent(null);
     setTarget(null);
@@ -187,7 +201,6 @@ function PokemonDetails({ match, location, history }) {
               break;
             }
           }
-          console.log(index, targetParent.children[0].children[1]);
           targetLocal =
             targetParent.children[0].children[1].children[index === 0 ? 1 : 0];
           addOrRemoveClass(targetLocal, "add", "active");
@@ -254,7 +267,6 @@ function PokemonDetails({ match, location, history }) {
                   >
                     Catch!
                   </button>
-                  {catchStatus}
                 </aside>
                 <div className="content-container hide-scrollbar">
                   <section className="sectioned-blocks">

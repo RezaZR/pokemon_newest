@@ -1,3 +1,5 @@
+import CircleAsset from "./assets/Circle";
+
 import styled from "@emotion/styled";
 
 const NavigationStyle = styled.div`
@@ -8,8 +10,8 @@ const NavigationStyle = styled.div`
   margin-top: 2rem;
   & .navigator-arrow {
     position: relative;
-    width: 89px;
-    height: 89px;
+    width: 117px;
+    height: 117px;
     & button {
       background-color: var(--color-bg-2);
       color: var(--color-bg-3-1);
@@ -27,16 +29,18 @@ const NavigationStyle = styled.div`
       left: 0;
       border-top-left-radius: 3px;
       border-bottom-left-radius: 3px;
+      box-shadow: inset 2px 2px var(--color-bg-3-1), 0 2px #000000;
     }
     & .right {
       right: 0;
       border-top-right-radius: 3px;
       border-bottom-right-radius: 3px;
+      box-shadow: inset 0px 2px var(--color-bg-3-1), 2px 2px #000000;
     }
     & .left,
     & .right {
-      width: 30px;
-      height: 30px;
+      width: 37px;
+      height: 37px;
       top: 50%;
       transform: translateY(-50%);
     }
@@ -46,6 +50,7 @@ const NavigationStyle = styled.div`
       transform: translateX(-50%);
       border-top-left-radius: 3px;
       border-top-right-radius: 3px;
+      box-shadow: inset 2px 2px var(--color-bg-3-1), 2px 0 #000000;
     }
     & .bottom {
       bottom: 0;
@@ -53,24 +58,25 @@ const NavigationStyle = styled.div`
       transform: translateX(-50%);
       border-bottom-left-radius: 3px;
       border-bottom-right-radius: 3px;
+      box-shadow: inset 2px 0px var(--color-bg-3-1), 2px 2px #000000;
     }
     & .top,
     & .bottom {
-      width: 30px;
-      height: 30px;
+      width: 43px;
+      height: 43px;
     }
     & .neutral {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 30px;
-      height: 30px;
+      width: 43px;
+      height: 43px;
     }
   }
   & .navigator-circle {
     position: relative;
-    width: 120px;
-    height: 120px;
+    width: 110px;
+    height: 110px;
     & button {
       background-color: var(--color-bg-2);
       color: var(--color-bg-3-1);
@@ -78,22 +84,30 @@ const NavigationStyle = styled.div`
       font-size: 1.25rem;
       border-radius: 50%;
       padding: 0;
-      width: 30px;
-      height: 30px;
+      width: 43px;
+      height: 43px;
+      box-shadow: inset 2px 0px var(--color-bg-3-1), 2px 2px #000000;
+      & svg {
+        width: 40%;
+        fill: var(--color-bg-3-1);
+      }
       &:hover,
       &:focus {
         color: var(--color-bg-3);
+        & svg {
+          fill: var(--color-bg-3);
+        }
       }
     }
     & .back {
-      left: 17%;
-      bottom: 25%;
-      transform: translate(-17%, -25%);
+      left: 0;
+      bottom: 17%;
+      transform: translateY(-17%);
     }
     & .select {
-      right: 17%;
-      top: 25%;
-      transform: translate(-17%, -25%);
+      right: 0;
+      top: 17%;
+      transform: translateY(-17%);
     }
   }
 `;
@@ -139,8 +153,17 @@ function Navigation({
         </button>
       </section>
       <section className="navigator-circle">
-        <button className="back" onClick={handleBackButton} title="Button back">
-          ○
+        <button
+          className="back"
+          onClick={handleBackButton}
+          title="Button back"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <CircleAsset />
         </button>
         <button
           className="select"

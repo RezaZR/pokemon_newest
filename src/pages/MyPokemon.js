@@ -19,11 +19,18 @@ function MyPokemon({ history }) {
     JSON.parse(localStorage.getItem("ownedPokemons"))
   );
   const [selectedPokemon, setSelectedPokemon] = React.useState({});
+  const [id, setId] = React.useState(null);
+  const [targetParent, setTargetParent] = React.useState(null);
+  const [target, setTarget] = React.useState(null);
+  const [isModalActive, setIsModalActive] = React.useState(false);
 
   function releasePokemon(pokemon) {
     // clear the current selected pokemon
     addOrRemoveClass(selectedPokemon.lastTarget, "remove", "active");
     setSelectedPokemon({});
+    setId(null);
+    setTargetParent(null);
+    setTarget(null);
 
     const index = ownedPokemons.indexOf(pokemon);
     if (index > -1) {
@@ -37,19 +44,34 @@ function MyPokemon({ history }) {
     }
   }
 
-  function openCloseModal(e, pokemon, condition, isPickedYes) {
+  async function openCloseModal(e, pokemon, condition, isPickedYes) {
     if (e) {
       e.preventDefault();
     }
     const modalElement = document.querySelector("#Modal");
     if (condition === "open") {
       addOrRemoveClass(modalElement, "add", "active");
+      setIsModalActive(true);
+      // clear the last target
+      const idLocal = "#Modal";
+      const targetParentLocal = await document.querySelector(idLocal);
+      console.log(targetParentLocal.children[0]);
+      const targetLocal = targetParentLocal.children[0].children[1];
+      addOrRemoveClass(targetLocal, "add", "active");
+      setId(idLocal);
+      setTargetParent(targetParentLocal);
+      setTarget(targetLocal);
     } else if (condition === "close") {
       addOrRemoveClass(modalElement, "remove", "active");
       // if the user pick "Yes", then release the pokemon
       if (isPickedYes) {
         releasePokemon(pokemon);
       }
+      setIsModalActive(false);
+      // clear the last target
+      setId(null);
+      setTargetParent(null);
+      setTarget(null);
     }
   }
 
@@ -57,6 +79,12 @@ function MyPokemon({ history }) {
     // check if it was coming from synthetic based event
     if (isSynthetic) {
       e.preventDefault();
+      const idLocal = "#My-Pokemon-List";
+      const targetParentLocal = document.querySelector(idLocal);
+      const targetLocal = e.target;
+      setId(idLocal);
+      setTargetParent(targetParentLocal);
+      setTarget(targetLocal);
     }
     const target = isSynthetic ? e.target : e;
     // remove class active from last selected pokemon
@@ -65,55 +93,163 @@ function MyPokemon({ history }) {
     }
     // then add class active to newly selected pokemon
     addOrRemoveClass(target, "add", "active");
+
+    setSelectedPokemon({ lastTarget: target, pokemon });
     // if true, open the modal dialogue
     if (isOpenTheModal) {
       openCloseModal(null, null, "open", null);
     }
-
-    setSelectedPokemon({ lastTarget: target, pokemon });
   }
 
   function handleClickNavigation(e, direction) {
     e.preventDefault();
     let index = null;
-    const targetParent = document.querySelector("#My-Pokemon-List");
-    let target = null;
-    if (direction === "top") {
-      // if the user haven't selected a pokemon,
-      // else if the user already selected a pokemon
-      if (Object.keys(selectedPokemon).length === 0) {
-        index = ownedPokemons.length - 1;
-        target = targetParent.children[index];
-      } else {
-        for (let i = 0; i < targetParent.children.length; i++) {
-          if (targetParent.children[i].classList.contains("active")) {
-            index = i === 0 ? targetParent.children.length - 1 : i - 1;
-            target = targetParent.children[index];
+    let idLocal = null;
+    let targetParentLocal = null;
+    let targetLocal = null;
+    // if navigation been operated, do it based on direction
+    // else if haven't been operated, check the direction is it vertical or horizontal
+    if (targetParent) {
+      if ((direction === "top" || direction === "bottom") && !isModalActive) {
+        if (id === "#My-Pokemon-List") {
+          for (let i = 0; i < targetParent.children.length; i++) {
+            if (targetParent.children[i].classList.contains("active")) {
+              index = direction === "top" ? i - 1 : i + 1;
+              break;
+            }
+          }
+          addOrRemoveClass(target, "remove", "active");
+          if (index === -1 || index === ownedPokemons.length) {
+            setSelectedPokemon({});
+            idLocal = "#Header nav ul";
+            targetParentLocal = document.querySelector(idLocal);
+            targetLocal =
+              targetParentLocal.children[direction === "top" ? 1 : 0];
+            addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setId(idLocal);
+            setTargetParent(targetParentLocal);
+            setTarget(targetLocal);
+          } else {
+            targetLocal = targetParent.children[index];
+            addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setTarget(targetLocal);
+            handleSelectedPokemon(targetLocal, ownedPokemons[index], false);
+          }
+          // set the scroll position to the selected target's offset position
+          setScrollPosition(targetParent, targetLocal.offsetTop - 73);
+        } else if (id === "#Header nav ul") {
+          for (let i = 0; i < targetParent.children.length; i++) {
+            if (targetParent.children[i].classList.contains("active")) {
+              index = i;
+              break;
+            }
+          }
+          addOrRemoveClass(target, "remove", "active");
+          if (
+            (direction === "top" && index === 1) ||
+            (direction === "bottom" && index === 0)
+          ) {
+            targetLocal =
+              targetParent.children[
+                direction === "top" ? index - 1 : index + 1
+              ];
+            addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setTarget(targetLocal);
+
+            // set the scroll position to the selected target's offset position
+            setScrollPosition(targetParent, targetLocal.offsetTop - 73);
+          } else if (
+            (direction === "top" && index === 0) ||
+            (direction === "bottom" && index === 1)
+          ) {
+            idLocal = "#My-Pokemon-List";
+            targetParentLocal = document.querySelector(idLocal);
+            targetLocal =
+              targetParentLocal.children[
+                direction === "top" ? ownedPokemons.length - 1 : 0
+              ];
+            addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setId(idLocal);
+            setTargetParent(targetParentLocal);
+            setTarget(targetLocal);
+            // set the scroll position to the selected target's offset position
+            setScrollPosition(targetParentLocal, targetLocal.offsetTop - 73);
+
+            handleSelectedPokemon(
+              targetLocal,
+              ownedPokemons[direction === "top" ? ownedPokemons.length - 1 : 0],
+              false
+            );
           }
         }
+      } else if (
+        (direction === "left" || direction === "right") &&
+        isModalActive
+      ) {
+        console.log(target);
+        for (let i = 0; i < targetParent.children[0].children.length; i++) {
+          if (
+            targetParent.children[0].children[i].classList.contains("active")
+          ) {
+            index = i;
+            break;
+          }
+        }
+        addOrRemoveClass(target, "remove", "active");
+        if (direction === "left") {
+          targetLocal =
+            targetParent.children[0].children[index === 1 ? 2 : index - 1];
+        } else if (direction === "right") {
+          targetLocal = targetParent.children[0].children[index === 1 ? 2 : 1];
+        }
+        console.log(index, targetLocal);
+        addOrRemoveClass(targetLocal, "add", "active");
+        // set them to the state
+        setTarget(targetLocal);
       }
-    } else if (direction === "bottom") {
-      if (Object.keys(selectedPokemon).length === 0) {
+    } else {
+      if ((direction === "top" || direction === "bottom") && !isModalActive) {
         index = 0;
-        target = targetParent.children[index];
-      } else {
-        for (let i = 0; i < targetParent.children.length; i++) {
-          if (targetParent.children[i].classList.contains("active")) {
-            index = i === ownedPokemons.length - 1 ? 0 : i + 1;
-            target = targetParent.children[index];
-          }
-        }
+        idLocal = "#My-Pokemon-List";
+        targetParentLocal = document.querySelector(idLocal);
+        targetLocal = targetParentLocal.children[index];
+        addOrRemoveClass(targetLocal, "add", "active");
+        // set them to the state
+        setId(idLocal);
+        setTargetParent(targetParentLocal);
+        setTarget(targetLocal);
+        // set the scroll position to the selected target's offset position
+        setScrollPosition(targetParentLocal, targetLocal.offsetTop - 73);
+
+        handleSelectedPokemon(targetLocal, ownedPokemons[index], false);
       }
     }
-    // set the scroll position to the selected target's offset position
-    setScrollPosition(targetParent, target.offsetTop - 73);
-    handleSelectedPokemon(target, ownedPokemons[index], false, false);
   }
 
   function goBack(e) {
     e.preventDefault();
 
     history.goBack();
+  }
+
+  function handleSelectButton(e) {
+    e.preventDefault();
+    if (isModalActive) {
+      target.click();
+    } else {
+      if (id === "#My-Pokemon-List") {
+        if (Object.keys(selectedPokemon).length !== 0) {
+          addOrRemoveClass(target, "remove", "active");
+          openCloseModal(e, null, "open", null);
+        }
+      } else if (id === "#Header nav ul") {
+        target.children[0].click();
+      }
+    }
   }
 
   return (
@@ -171,11 +307,7 @@ function MyPokemon({ history }) {
             <NavigationComponent
               handleClickNavigation={handleClickNavigation}
               handleBackButton={goBack}
-              handleSelectButton={(e) =>
-                Object.keys(selectedPokemon).length !== 0
-                  ? openCloseModal(e, null, "open", null)
-                  : null
-              }
+              handleSelectButton={handleSelectButton}
             />
           </SkeletonComponent>
         </ContainerComponent>

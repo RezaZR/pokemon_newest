@@ -40,6 +40,12 @@ function Home({ history }) {
     // check if it was coming from synthetic based event
     if (isSynthetic) {
       e.preventDefault();
+      const idLocal = "#Pokemon-List";
+      const targetParentLocal = document.querySelector(idLocal);
+      const targetLocal = e.target;
+      setId(idLocal);
+      setTargetParent(targetParentLocal);
+      setTarget(targetLocal);
     }
     const target = isSynthetic ? e.target : e;
     // remove class active from last selected pokemon

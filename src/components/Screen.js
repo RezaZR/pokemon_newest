@@ -72,7 +72,7 @@ const ScreenStyle = styled.div`
         font-weight: bold;
       }
       & .sectioned-blocks__content {
-        font-size: 1rem;
+        font-size: 0.85rem;
         font-weight: normal;
         text-transform: capitalize;
       }

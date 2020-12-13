@@ -117,7 +117,11 @@ function MyPokemon({ history }) {
     // else if haven't been operated, set the first on the list to selected pokemon
     if (targetParent) {
       if ((direction === "top" || direction === "bottom") && !isModalActive) {
-        if (id === "#My-Pokemon-List" && ownedPokemons.length > 0) {
+        if (
+          id === "#My-Pokemon-List" &&
+          ownedPokemons &&
+          ownedPokemons.length > 0
+        ) {
           for (let i = 0; i < targetParent.children.length; i++) {
             if (targetParent.children[i].classList.contains("active")) {
               index = direction === "top" ? i - 1 : i + 1;
@@ -171,7 +175,7 @@ function MyPokemon({ history }) {
             (direction === "top" && index === 0) ||
             (direction === "bottom" && index === 1)
           ) {
-            if (ownedPokemons.length > 0) {
+            if (ownedPokemons && ownedPokemons.length > 0) {
               idLocal = "#My-Pokemon-List";
               targetParentLocal = document.querySelector(idLocal);
               targetLocal =
@@ -231,6 +235,7 @@ function MyPokemon({ history }) {
       if (
         (direction === "top" || direction === "bottom") &&
         !isModalActive &&
+        ownedPokemons &&
         ownedPokemons.length > 0
       ) {
         index = 0;
@@ -288,26 +293,25 @@ function MyPokemon({ history }) {
           <CaseComponent>
             <ScreenComponent
               childClasses={
-                ownedPokemons.length > 0
+                ownedPokemons && ownedPokemons.length > 0
                   ? "full-screen hide-scrollbar"
                   : "full-screen hide-scrollbar center"
               }
             >
-              {ownedPokemons.length > 0 ? (
+              {ownedPokemons && ownedPokemons.length > 0 ? (
                 <>
                   <ul
                     className="content-container hide-scrollbar"
                     id="My-Pokemon-List"
                   >
-                    {ownedPokemons &&
-                      ownedPokemons.map((pokemon, index) => (
-                        <ListComponent
-                          key={`${pokemon.name}-${index}`}
-                          pokemon={pokemon}
-                          handleSelectedPokemon={handleSelectedPokemon}
-                          contentFor="mypokemon"
-                        />
-                      ))}
+                    {ownedPokemons.map((pokemon, index) => (
+                      <ListComponent
+                        key={`${pokemon.name}-${index}`}
+                        pokemon={pokemon}
+                        handleSelectedPokemon={handleSelectedPokemon}
+                        contentFor="mypokemon"
+                      />
+                    ))}
                   </ul>
                   <ModalComponent id="Modal">
                     {Object.keys(selectedPokemon).length !== 0 && (

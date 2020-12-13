@@ -23,18 +23,18 @@ const NavigationStyle = styled.div`
         }
       }
     }
-    & .previous {
+    & .left {
       left: 0;
       border-top-left-radius: 3px;
       border-bottom-left-radius: 3px;
     }
-    & .next {
+    & .right {
       right: 0;
       border-top-right-radius: 3px;
       border-bottom-right-radius: 3px;
     }
-    & .previous,
-    & .next {
+    & .left,
+    & .right {
       width: 30px;
       height: 30px;
       top: 50%;
@@ -100,7 +100,6 @@ const NavigationStyle = styled.div`
 
 function Navigation({
   handleClickNavigation,
-  handleClickPagination,
   handleBackButton,
   handleSelectButton,
 }) {
@@ -108,15 +107,15 @@ function Navigation({
     <NavigationStyle>
       <section className="navigator-arrow">
         <button
-          className="previous"
-          onClick={(e) => handleClickPagination(e, "previous")}
+          className="left"
+          onClick={(e) => handleClickNavigation(e, "left")}
           title="Button left"
         >
           ◀
         </button>
         <button
-          className="next"
-          onClick={(e) => handleClickPagination(e, "next")}
+          className="right"
+          onClick={(e) => handleClickNavigation(e, "right")}
           title="Button right"
         >
           ▶

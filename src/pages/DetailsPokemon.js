@@ -82,12 +82,13 @@ function PokemonDetails({ match, location, history }) {
           addOrRemoveClass(target, "remove", "active");
           index = 1;
           idLocal = "#Header nav ul";
-          setId(idLocal);
           targetParentLocal = document.querySelector(idLocal);
-          setTargetParent(targetParentLocal);
           targetLocal = targetParentLocal.children[index];
-          setTarget(targetLocal);
           addOrRemoveClass(targetLocal, "add", "active");
+          // set them to the state
+          setId(idLocal);
+          setTargetParent(targetParentLocal);
+          setTarget(targetLocal);
         } else if (id === "#Header nav ul") {
           // first check which index is the current active children
           // if index is 0, then we go to the Catch Button
@@ -101,16 +102,18 @@ function PokemonDetails({ match, location, history }) {
           addOrRemoveClass(target, "remove", "active");
           if (index === 0) {
             idLocal = "#Catch";
-            setId(idLocal);
             targetParentLocal = document.querySelector(idLocal);
-            setTargetParent(targetParentLocal);
             targetLocal = targetParentLocal.children[1];
-            setTarget(targetLocal);
             addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setId(idLocal);
+            setTargetParent(targetParentLocal);
+            setTarget(targetLocal);
           } else if (index === 1) {
             targetLocal = targetParent.children[index - 1];
-            setTarget(targetLocal);
             addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setTarget(targetLocal);
           }
         }
       } else if (direction === "bottom") {
@@ -118,12 +121,13 @@ function PokemonDetails({ match, location, history }) {
           addOrRemoveClass(target, "remove", "active");
           index = 0;
           idLocal = "#Header nav ul";
-          setId(idLocal);
           targetParentLocal = document.querySelector(idLocal);
-          setTargetParent(targetParentLocal);
           targetLocal = targetParentLocal.children[index];
-          setTarget(targetLocal);
           addOrRemoveClass(targetLocal, "add", "active");
+          // set them to the state
+          setId(idLocal);
+          setTargetParent(targetParentLocal);
+          setTarget(targetLocal);
         } else if (id === "#Header nav ul") {
           for (let i = 0; i < targetParent.children.length; i++) {
             if (targetParent.children[i].classList.contains("active")) {
@@ -134,28 +138,31 @@ function PokemonDetails({ match, location, history }) {
           addOrRemoveClass(target, "remove", "active");
           if (index === 0) {
             targetLocal = targetParent.children[index + 1];
-            setTarget(targetLocal);
             addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setTarget(targetLocal);
           } else if (index === 1) {
             idLocal = "#Catch";
-            setId(idLocal);
             targetParentLocal = document.querySelector(idLocal);
-            setTargetParent(targetParentLocal);
             targetLocal = targetParentLocal.children[1];
-            setTarget(targetLocal);
             addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setId(idLocal);
+            setTargetParent(targetParentLocal);
+            setTarget(targetLocal);
           }
         }
       }
     } else {
       index = 1;
       idLocal = "#Catch";
-      setId(idLocal);
       targetParentLocal = document.querySelector(idLocal);
-      setTargetParent(targetParentLocal);
       targetLocal = targetParentLocal.children[index];
-      setTarget(targetLocal);
       addOrRemoveClass(targetLocal, "add", "active");
+      // set them to the state
+      setId(idLocal);
+      setTargetParent(targetParentLocal);
+      setTarget(targetLocal);
     }
   }
 
@@ -170,7 +177,6 @@ function PokemonDetails({ match, location, history }) {
     if (id === "#Button-Catch") {
       catchPokemon(e);
     } else if (id === "#Header nav ul") {
-      console.log(target);
       target.children[0].click();
     }
   }

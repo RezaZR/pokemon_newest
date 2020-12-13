@@ -22,6 +22,9 @@ function Home({ history }) {
   const [limit, setLimit] = React.useState(10);
   const [offset, setOffset] = React.useState(1);
   const [selectedPokemon, setSelectedPokemon] = React.useState({});
+  const [id, setId] = React.useState(null);
+  const [targetParent, setTargetParent] = React.useState(null);
+  const [target, setTarget] = React.useState(null);
 
   const { loading, error, data: { pokemons = [] } = {}, fetchMore } = useQuery(
     GET_POKEMONS_LIST,
@@ -49,16 +52,16 @@ function Home({ history }) {
     setSelectedPokemon({ lastTarget: target, pokemon });
   }
 
-  function handleClickPagination(e, direction) {
+  function handlePagination(e, direction) {
     e.preventDefault();
     setSelectedPokemon({});
-    if (direction === "previous" && offset > 0) {
-      if (offset - limit === 0) {
+    if (direction === "left" && offset > 0) {
+      if (offset - limit < 1) {
         setOffset(1);
       } else {
         setOffset(offset - limit);
       }
-    } else if (direction === "next" && offset < pokemons.count) {
+    } else if (direction === "right" && offset < pokemons.count) {
       setOffset(offset + limit);
     }
     try {
@@ -75,38 +78,120 @@ function Home({ history }) {
   function handleClickNavigation(e, direction) {
     e.preventDefault();
     let index = null;
-    const targetParent = document.querySelector("#Pokemon-List");
-    let target = null;
-    if (direction === "top") {
-      // if the user haven't selected a pokemon,
-      // else if the user already selected a pokemon
-      if (Object.keys(selectedPokemon).length === 0) {
-        index = pokemons.results.length - 2;
-        target = targetParent.children[index];
-      } else {
-        for (let i = 0; i < targetParent.children.length; i++) {
-          if (targetParent.children[i].classList.contains("active")) {
-            index = i === 0 ? targetParent.children.length - 1 : i - 1;
-            target = targetParent.children[index];
+    let idLocal = null;
+    let targetParentLocal = null;
+    let targetLocal = null;
+    // if navigation been operated, do it based on direction
+    // else if haven't been operated, check the direction is it vertical or horizontal
+    if (targetParent) {
+      if (direction === "top" || direction === "bottom") {
+        if (id === "#Pokemon-List") {
+          for (let i = 0; i < targetParent.children.length; i++) {
+            if (targetParent.children[i].classList.contains("active")) {
+              index = direction === "top" ? i - 1 : i + 1;
+              break;
+            }
+          }
+          addOrRemoveClass(target, "remove", "active");
+          if (index === -1 || index === pokemons.results.length - 1) {
+            setSelectedPokemon({});
+            idLocal = "#Header nav ul";
+            targetParentLocal = document.querySelector(idLocal);
+            targetLocal =
+              targetParentLocal.children[direction === "top" ? 1 : 0];
+            addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setId(idLocal);
+            setTargetParent(targetParentLocal);
+            setTarget(targetLocal);
+          } else {
+            targetLocal = targetParent.children[index];
+            addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setTarget(targetLocal);
+            handleSelectedPokemon(targetLocal, pokemons.results[index], false);
+          }
+          // set the scroll position to the selected target's offset position
+          setScrollPosition(targetParent, targetLocal.offsetTop - 73);
+        } else if (id === "#Header nav ul") {
+          for (let i = 0; i < targetParent.children.length; i++) {
+            if (targetParent.children[i].classList.contains("active")) {
+              index = i;
+              break;
+            }
+          }
+          addOrRemoveClass(target, "remove", "active");
+          if (
+            (direction === "top" && index === 1) ||
+            (direction === "bottom" && index === 0)
+          ) {
+            targetLocal =
+              targetParent.children[
+                direction === "top" ? index - 1 : index + 1
+              ];
+            addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setTarget(targetLocal);
+
+            // set the scroll position to the selected target's offset position
+            setScrollPosition(targetParent, targetLocal.offsetTop - 73);
+          } else if (
+            (direction === "top" && index === 0) ||
+            (direction === "bottom" && index === 1)
+          ) {
+            idLocal = "#Pokemon-List";
+            targetParentLocal = document.querySelector(idLocal);
+            targetLocal =
+              targetParentLocal.children[
+                direction === "top" ? pokemons.results.length - 2 : 0
+              ];
+            addOrRemoveClass(targetLocal, "add", "active");
+            // set them to the state
+            setId(idLocal);
+            setTargetParent(targetParentLocal);
+            setTarget(targetLocal);
+            // set the scroll position to the selected target's offset position
+            setScrollPosition(targetParentLocal, targetLocal.offsetTop - 73);
+
+            handleSelectedPokemon(
+              targetLocal,
+              pokemons.results[
+                direction === "top" ? pokemons.results.length - 2 : 0
+              ],
+              false
+            );
           }
         }
+      } else if (direction === "left" || direction === "right") {
+        // clear the last target
+        setId(null);
+        setTargetParent(null);
+        setTarget(null);
+        handlePagination(e, direction);
       }
-    } else if (direction === "bottom") {
-      if (Object.keys(selectedPokemon).length === 0) {
+    } else {
+      if (direction === "top" || direction === "bottom") {
         index = 0;
-        target = targetParent.children[index];
-      } else {
-        for (let i = 0; i < targetParent.children.length; i++) {
-          if (targetParent.children[i].classList.contains("active")) {
-            index = i === pokemons.results.length - 2 ? 0 : i + 1;
-            target = targetParent.children[index];
-          }
-        }
+        idLocal = "#Pokemon-List";
+        targetParentLocal = document.querySelector(idLocal);
+        targetLocal = targetParentLocal.children[index];
+        addOrRemoveClass(targetLocal, "add", "active");
+        // set them to the state
+        setId(idLocal);
+        setTargetParent(targetParentLocal);
+        setTarget(targetLocal);
+        // set the scroll position to the selected target's offset position
+        setScrollPosition(targetParentLocal, targetLocal.offsetTop - 73);
+
+        handleSelectedPokemon(targetLocal, pokemons.results[index], false);
+      } else if (direction === "left" || direction === "right") {
+        // clear the last target
+        setId(null);
+        setTargetParent(null);
+        setTarget(null);
+        handlePagination(e, direction);
       }
     }
-    // set the scroll position to the selected target's offset position
-    setScrollPosition(targetParent, target.offsetTop - 73);
-    handleSelectedPokemon(target, pokemons.results[index], false);
   }
 
   function goBack(e) {
@@ -122,6 +207,15 @@ function Home({ history }) {
       pathname: `/pokemon_details/${selectedPokemon.pokemon.name}`,
       state: selectedPokemon.pokemon.image,
     });
+  }
+
+  function handleSelectButton(e) {
+    e.preventDefault();
+    if (id === "#Pokemon-List") {
+      goToSelectedPokemon(e);
+    } else if (id === "#Header nav ul") {
+      target.children[0].click();
+    }
   }
 
   return (
@@ -165,9 +259,8 @@ function Home({ history }) {
             </CaseComponent>
             <NavigationComponent
               handleClickNavigation={handleClickNavigation}
-              handleClickPagination={handleClickPagination}
               handleBackButton={goBack}
-              handleSelectButton={goToSelectedPokemon}
+              handleSelectButton={handleSelectButton}
             />
           </SkeletonComponent>
         </ContainerComponent>

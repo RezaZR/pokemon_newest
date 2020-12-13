@@ -119,8 +119,7 @@ function MyPokemon({ history }) {
       if ((direction === "top" || direction === "bottom") && !isModalActive) {
         if (
           id === "#My-Pokemon-List" &&
-          ownedPokemons &&
-          ownedPokemons.length > 0
+          (ownedPokemons || ownedPokemons.length > 0)
         ) {
           for (let i = 0; i < targetParent.children.length; i++) {
             if (targetParent.children[i].classList.contains("active")) {
@@ -232,6 +231,7 @@ function MyPokemon({ history }) {
         setTarget(targetLocal);
       }
     } else {
+      console.log("z", ownedPokemons && ownedPokemons.length > 0);
       if (
         (direction === "top" || direction === "bottom") &&
         !isModalActive &&
@@ -251,7 +251,7 @@ function MyPokemon({ history }) {
         setScrollPosition(targetParentLocal, targetLocal.offsetTop - 73);
 
         handleSelectedPokemon(targetLocal, ownedPokemons[index], false);
-      } else if (ownedPokemons.length === 0) {
+      } else if (!ownedPokemons || ownedPokemons.length === 0) {
         idLocal = "#Header nav ul";
         targetParentLocal = document.querySelector(idLocal);
         targetLocal = targetParentLocal.children[1];

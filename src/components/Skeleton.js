@@ -9,6 +9,8 @@ const SkeletonStyle = styled.section`
   border-bottom-left-radius: 50% 7%;
   border-bottom-right-radius: 50% 7%;
   padding: 1rem;
+  box-shadow: 3px 3px rgba(0, 0, 0, 0.15), inset 2px 2px #000000;
+  border: 3px solid #000000;
 `;
 
 function Skeleton({ children, ...rest }) {

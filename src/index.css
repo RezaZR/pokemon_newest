@@ -4,12 +4,9 @@
   --color-bg-2-035: rgba(54, 53, 52, 0.35);
   --color-bg-3: #b5b2b0;
   --color-bg-3-1: #4c4947;
+  --color-bg-4: #ff7171;
 
   --color-text-1: #000;
-
-  --color-accent-1: #2c8385;
-
-  --color-remove: rgba(163, 0, 0, 1);
 
   --font-1: "Playfair Display", serif;
 }
